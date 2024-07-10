@@ -102,6 +102,7 @@ pub fn get_work_logs_by_date(
     work_log
         .filter(start_date.ge(target_datetime_start))
         .filter(start_date.lt(target_datetime_end))
+        .order(start_date.desc())
         .load::<WorkLog>(&mut *conn)
         .expect("Error loading work logs by date")
 }

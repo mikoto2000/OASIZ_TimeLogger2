@@ -13,7 +13,7 @@ export interface CreateLog {
 export interface UpdateLog {
   workNo: number;
   workName: string;
-  endDate: string;
+  endDate?: string | null;
 }
 
 export interface Service {

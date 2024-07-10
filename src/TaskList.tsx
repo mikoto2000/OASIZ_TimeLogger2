@@ -1,20 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { List, ListItem, ListItemText, Divider, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
-import { WorkLog } from './services/Service';
+import { List, Divider, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { Service, UpdateLog, WorkLog } from './services/Service';
+import TaskListItem from './TaskListItem';
+import { TauriService } from './services/TauriService';
+
+import { scroller, Element } from 'react-scroll';
 
 interface TaskListProps {
-  logs?: WorkLog[];
+  service: Service;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ logs: initialLogs = [] }) => {
+const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [logs, setLogs] = useState<WorkLog[]>(initialLogs);
+  const [logs, setLogs] = useState<WorkLog[]>([]);
   const [showDialog, setShowDialog] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [editTask, setEditTask] = useState<WorkLog | null>(null);
 
+  let isInitialized = false;
+
   useEffect(() => {
-    setLogs(initialLogs);
-  }, [initialLogs]);
+    if (!isInitialized) {
+      const now = new Date();
+      service.getWorkLogsByDate(now.getFullYear(), now.getMonth() + 1, now.getDate())
+        .then((logs) => {
+          const newLogs = logs.map((e: any) => {
+            return {
+              workNo: e.work_no,
+              workName: e.work_name,
+              startDate: e.start_date,
+              endDate: e.end_date,
+            }
+          });
+          setLogs(newLogs);
+        })
+        .catch((e: any) => setErrorMessage(e.message));
+    }
+    isInitialized = true;
+  }, []);
+
+  useEffect(() => {
+    if (editTask) {
+      scroller.scrollTo(editTask.workNo.toString(), {
+        duration: 500,
+        delay: 0,
+        smooth: "easeInOutQuart",
+        offset: 0
+      });
+    }
+  }, [logs]);
 
   const handlePrevDay = () => {
     const prevDay = new Date(selectedDate);
@@ -33,8 +67,13 @@ const TaskList: React.FC<TaskListProps> = ({ logs: initialLogs = [] }) => {
     setShowDialog(true);
   };
 
-  const handleSave = () => {
-    // 編集を保存するロジックを追加
+  const handleSave = (task: WorkLog, newName: string) => {
+    const newTask: UpdateLog = {
+      workNo: task.workNo,
+      workName: newName,
+      endDate: task.endDate,
+    };
+    service.updateWorkName(newTask);
     setShowDialog(false);
   };
 
@@ -42,34 +81,27 @@ const TaskList: React.FC<TaskListProps> = ({ logs: initialLogs = [] }) => {
     setShowDialog(false);
   };
 
-  const filteredLogs = logs.filter(log => {
-    const logDate = new Date(log.startDate);
-    return logDate.toDateString() === selectedDate.toDateString();
-  });
-
   return (
     <div>
       <Typography variant="h5">各日の作業一覧画面</Typography>
       <Button onClick={handlePrevDay}>前日</Button>
       <Button onClick={handleNextDay}>翌日</Button>
+      <div>{errorMessage}</div>
       <div>
         <Typography variant="h6">{selectedDate.toLocaleDateString()}の作業一覧</Typography>
         <List>
-          {filteredLogs.map((log, index) => (
+          {logs.map((log, index) => (
             <div key={index}>
-              <ListItem button onClick={() => handleEdit(log)}>
-                <ListItemText
-                  primary={`作業名: ${log.workName}`}
-                  secondary={
-                    <>
-                      <div>開始: {log.startDate}</div>
-                      <div>終了: {log.endDate ? log.endDate : '進行中'}</div>
-                      <div>経過時間(TODO): {/*log.elapsed !== null ? `${(log.elapsed / 60).toFixed(2)} 分` : '計算中'*/}</div>
-                    </>
-                  }
+              <Element name={log.workNo.toString()}>
+                <TaskListItem
+                  workNo={log.workNo}
+                  workName={log.workName}
+                  startDate={log.startDate}
+                  endDate={log.endDate}
+                  onItemClicked={() => handleEdit(log)}
                 />
-              </ListItem>
-              {index < filteredLogs.length - 1 && <Divider />}
+              </Element>
+              {index < logs.length - 1 && <Divider />}
             </div>
           ))}
         </List>
@@ -88,7 +120,18 @@ const TaskList: React.FC<TaskListProps> = ({ logs: initialLogs = [] }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>キャンセル</Button>
-          <Button onClick={handleSave}>保存</Button>
+          <Button onClick={(e) => {
+            console.log(e);
+            console.log(editTask);
+            if (editTask) {
+              handleSave(editTask, editTask.workName);
+              const targetLog = logs.find((e) => e.workNo === editTask.workNo);
+              if (targetLog) {
+                targetLog.workName = editTask.workName;
+                setLogs([...logs]);
+              }
+            }
+          }}>保存</Button>
         </DialogActions>
       </Dialog>
     </div>

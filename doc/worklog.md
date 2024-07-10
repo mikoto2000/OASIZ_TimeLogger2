@@ -131,7 +131,7 @@ npm install @mui/material @emotion/react @emotion/styled
 cargo add diesel --features sqlite,chrono
 cargo add dotenv
 cargo install diesel_cli --no-default-features --features sqlite-bundled
-cargo add chrono --features serde,diesel
+cargo add chrono --features serde
 ```
 
 
@@ -156,4 +156,11 @@ EOF
 diesel migration run --database-url=assets/worklog.db
 ```
 
+
+## スクロールのためにフロントエンドにライブラリを追加
+
+```sh
+npm i react-scroll
+npm i -D @types/react-scroll
+```
 
