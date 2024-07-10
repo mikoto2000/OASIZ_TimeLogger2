@@ -1,44 +1,18 @@
 import React, { useState } from 'react';
 import TaskRecorder from './TaskRecorder';
 import TaskList from './TaskList';
-import { AppBar, Tabs, Tab, Box } from '@mui/material';
+import { AppBar, Tabs, Tab } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './theme';
+import TabPanel, { a11yProps } from './TabPanel';
+import { Service } from './services/Service';
+import { TauriService } from './services/TauriService';
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
+interface AppProps {
+  service?: Service;
 }
 
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`tabpanel-${index}`}
-      aria-labelledby={`tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
-
-function a11yProps(index: number) {
-  return {
-    id: `tab-${index}`,
-    'aria-controls': `tabpanel-${index}`,
-  };
-}
-
-const App: React.FC = () => {
+const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
   const [value, setValue] = useState<number>(0);
 
   const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
@@ -54,7 +28,7 @@ const App: React.FC = () => {
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <TaskRecorder />
+        <TaskRecorder service={service} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <TaskList />
@@ -64,4 +38,5 @@ const App: React.FC = () => {
 };
 
 export default App;
+
 
