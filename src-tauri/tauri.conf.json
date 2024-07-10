@@ -1,7 +1,7 @@
 {
-  "productName": "oasiz_timelogger",
-  "version": "0.0.0",
-  "identifier": "com.tauri.dev",
+  "productName": "oasiz_timelogger2",
+  "version": "0.0.1",
+  "identifier": "dev.mikoto2000.oasiz_timelogger2",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -11,7 +11,7 @@
   "app": {
     "windows": [
       {
-        "title": "oasiz_timelogger",
+        "title": "oasiz_timelogger2",
         "width": 800,
         "height": 600
       }

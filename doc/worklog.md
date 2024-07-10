@@ -42,4 +42,11 @@ $ mv OASIZ_TimeLogger/.* ./
 $ rmdir OASIZ_TimeLogger/
 ```
 
+## run
+
+```sh
+npm i
+npm run tauri dev
+```
+
 
