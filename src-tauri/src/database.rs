@@ -21,7 +21,7 @@ pub fn create_work_log(
     work_name: String,
     start_date: String,
     end_date: Option<String>,
-) -> usize {
+) -> i32 {
     let new_work_log = NewWorkLog {
         work_name,
         start_date,
@@ -33,7 +33,14 @@ pub fn create_work_log(
     diesel::insert_into(work_log)
         .values(&new_work_log)
         .execute(&mut *conn)
-        .expect("Error saving new work log")
+        .expect("Error saving new work log");
+
+    // 最後に挿入したレコードの ID を取得する
+    diesel::select(diesel::dsl::sql::<diesel::sql_types::Integer>(
+        "last_insert_rowid()",
+    ))
+    .first(&mut *conn)
+    .expect("Error getting last inserted row id")
 }
 
 pub fn get_all_work_logs(conn: &Arc<Mutex<SqliteConnection>>) -> Vec<WorkLog> {
@@ -82,7 +89,10 @@ pub fn update_end_date(
     }
 }
 
-pub fn get_work_logs_by_date(conn: &Arc<Mutex<SqliteConnection>>, date_as_rfc3339: String) -> Vec<WorkLog> {
+pub fn get_work_logs_by_date(
+    conn: &Arc<Mutex<SqliteConnection>>,
+    date_as_rfc3339: String,
+) -> Vec<WorkLog> {
     let mut conn = conn.lock().unwrap();
     work_log
         .filter(schema::work_log::dsl::start_date.like(format!("{}%", date_as_rfc3339)))

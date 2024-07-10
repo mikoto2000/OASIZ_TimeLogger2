@@ -1,26 +1,26 @@
-export interface Log {
-  work_no: number;
-  work_name: string;
-  start_date: string;
-  end_date: string | null;
+export interface WorkLog {
+  workNo: number;
+  workName: string;
+  startDate: string;
+  endDate?: string | null;
 }
 
 export interface CreateLog {
-  work_name: string;
-  start_date: string;
-  end_date?: string | null;
+  workName: string;
+  startDate: string;
+  endDate?: string | null;
 }
 
 export interface UpdateLog {
-  work_no: number;
-  work_name: string;
-  end_date: string;
+  workNo: number;
+  workName: string;
+  endDate: string;
 }
 
 export interface Service {
-  getAllWorkLogs(): Promise<Log[]>;
-  getWorkLogsByDate(date: string): Promise<Log[]>;
-  createWorkLog(log: CreateLog): Promise<void>;
+  getAllWorkLogs(): Promise<WorkLog[]>;
+  getWorkLogsByDate(date: string): Promise<WorkLog[]>;
+  createWorkLog(log: CreateLog): Promise<number>;
   updateWorkName(log: UpdateLog): Promise<void>;
   updateEndDate(log: UpdateLog): Promise<void>;
 }

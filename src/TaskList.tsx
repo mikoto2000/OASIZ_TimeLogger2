@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { List, ListItem, ListItemText, Divider, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
-
-interface Log {
-  taskName: string;
-  startTime: string;
-  endTime: string | null;
-  elapsed: number | null;
-}
+import { Log } from './services/Service';
 
 interface TaskListProps {
   logs?: Log[];
@@ -49,7 +43,7 @@ const TaskList: React.FC<TaskListProps> = ({ logs: initialLogs = [] }) => {
   };
 
   const filteredLogs = logs.filter(log => {
-    const logDate = new Date(log.startTime);
+    const logDate = new Date(log.startDate);
     return logDate.toDateString() === selectedDate.toDateString();
   });
 
@@ -65,12 +59,12 @@ const TaskList: React.FC<TaskListProps> = ({ logs: initialLogs = [] }) => {
             <div key={index}>
               <ListItem button onClick={() => handleEdit(log)}>
                 <ListItemText
-                  primary={`作業名: ${log.taskName}`}
+                  primary={`作業名: ${log.workName}`}
                   secondary={
                     <>
-                      <div>開始: {log.startTime}</div>
-                      <div>終了: {log.endTime ? log.endTime : '進行中'}</div>
-                      <div>経過時間: {log.elapsed !== null ? `${(log.elapsed / 60).toFixed(2)} 分` : '計算中'}</div>
+                      <div>開始: {log.startDate}</div>
+                      <div>終了: {log.endDate ? log.endDate : '進行中'}</div>
+                      <div>経過時間(TODO): {/*log.elapsed !== null ? `${(log.elapsed / 60).toFixed(2)} 分` : '計算中'*/}</div>
                     </>
                   }
                 />
@@ -88,8 +82,8 @@ const TaskList: React.FC<TaskListProps> = ({ logs: initialLogs = [] }) => {
             margin="dense"
             label="作業名"
             fullWidth
-            value={editTask?.taskName || ''}
-            onChange={(e) => setEditTask(editTask ? { ...editTask, taskName: e.target.value } : null)}
+            value={editTask?.workName || ''}
+            onChange={(e) => setEditTask(editTask ? { ...editTask, workName: e.target.value } : null)}
           />
         </DialogContent>
         <DialogActions>

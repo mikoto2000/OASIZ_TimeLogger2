@@ -1,6 +1,5 @@
-import React from 'react';
 import { StoryFn, Meta } from '@storybook/react';
-import TaskRecorder, { Log } from './TaskRecorder';
+import TaskRecorder from './TaskRecorder';
 
 export default {
   title: 'Components/TaskRecorder',
@@ -16,22 +15,19 @@ export const WithMultipleItems = Template.bind({});
 WithMultipleItems.args = {
   initialLogs: [
     {
-      taskName: 'Task 1',
-      startTime: '2024-07-10T08:00:00Z',
-      endTime: '2024-07-10T09:00:00Z',
-      elapsed: 3600,
+      workName: 'Task 1',
+      startDate: '2024-07-10T08:00:00Z',
+      endDate: '2024-07-10T09:00:00Z',
     },
     {
-      taskName: 'Task 2',
-      startTime: '2024-07-10T09:30:00Z',
-      endTime: '2024-07-10T10:00:00Z',
-      elapsed: 1800,
+      workName: 'Task 2',
+      startDate: '2024-07-10T09:30:00Z',
+      endDate: '2024-07-10T10:00:00Z',
     },
     {
-      taskName: 'Task 3',
-      startTime: '2024-07-10T10:15:00Z',
-      endTime: '2024-07-10T11:15:00Z',
-      elapsed: 3600,
+      workName: 'Task 3',
+      startDate: '2024-07-10T10:15:00Z',
+      endDate: '2024-07-10T11:15:00Z',
     },
   ],
 };

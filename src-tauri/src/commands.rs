@@ -7,7 +7,10 @@ use serde::{Deserialize, Serialize};
 use tauri::State;
 
 use crate::{
-    database::{create_work_log, get_all_work_logs, get_work_logs_by_date, update_end_date, update_work_name},
+    database::{
+        create_work_log, get_all_work_logs, get_work_logs_by_date, update_end_date,
+        update_work_name,
+    },
     models::WorkLog,
     AppState,
 };
@@ -33,11 +36,17 @@ pub struct UpdateWorkLog {
 }
 
 #[tauri::command]
-pub fn create_work_log_command(state: State<'_, AppState>, log: CreateLog) {
+pub fn create_work_log_command(
+    state: State<'_, AppState>,
+    work_name: String,
+    start_date: String,
+    end_date: Option<String>,
+) -> Result<i32, String> {
+    println!("create_work_log_command");
     let state = state.clone();
     let conn = state.conn.clone();
 
-    create_work_log(&conn, log.work_name, log.start_date, log.end_date);
+    Ok(create_work_log(&conn, work_name, start_date, end_date))
 }
 
 #[tauri::command]
@@ -51,12 +60,14 @@ pub fn get_all_work_logs_command(state: State<'_, AppState>) -> Result<Vec<WorkL
 #[tauri::command]
 pub fn update_work_name_command(
     state: State<'_, AppState>,
-    log: UpdateWorkLog,
+    work_no: i32,
+    work_name: String,
 ) -> Result<(), String> {
+    println!("update_work_name_command");
     let state = state.clone();
     let conn = state.conn.clone();
 
-    update_work_name(&conn, log.work_no, log.work_name);
+    update_work_name(&conn, work_no, work_name);
 
     Ok(())
 }
@@ -64,12 +75,13 @@ pub fn update_work_name_command(
 #[tauri::command]
 pub fn update_end_date_command(
     state: State<'_, AppState>,
-    log: UpdateWorkLog,
+    work_no: i32,
+    end_date: Option<String>,
 ) -> Result<(), String> {
     let state = state.clone();
     let conn = state.conn.clone();
 
-    update_end_date(&conn, log.work_no, log.end_date);
+    update_end_date(&conn, work_no, end_date);
 
     Ok(())
 }
@@ -86,4 +98,3 @@ pub fn get_work_logs_by_date_command(
 
     Ok(results)
 }
-
