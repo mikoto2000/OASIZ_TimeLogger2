@@ -118,3 +118,9 @@ npm run storybook
 
 その後、ホストで `http://localhost:6006` へアクセス。
 
+
+## タブ UI 実現のためのパッケージインストール
+
+```sh
+npm install @mui/material @emotion/react @emotion/styled
+```
