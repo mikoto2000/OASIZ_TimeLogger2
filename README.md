@@ -1,7 +1,27 @@
-# Tauri + React + Typescript
+# OASIZ_TimeLogger2
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+時間記録支援アプリケーション。
+([mikoto2000/OASIZ_TimeLogger: 時間記録支援アプリケーション](https://github.com/mikoto2000/OASIZ_TimeLogger/tree/master) の再実装)
 
-## Recommended IDE Setup
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+# Features:
+
+- [x] : 作業名を指定して、作業時間を記録すること
+- [ ] : 記録した作業を後から確認すること
+- [ ] : 作業名を後から変更すること
+- [ ] : 作業記録をエクスポートすること
+
+
+# License:
+
+Copyright (C) 2024 mikoto2000
+
+This software is released under the MIT License, see LICENSE
+
+このソフトウェアは MIT ライセンスの下で公開されています。 LICENSE を参照してください。
+
+
+# Author:
+
+mikoto2000 <mikoto2000@gmail.com>
+
