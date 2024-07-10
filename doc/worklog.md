@@ -128,9 +128,10 @@ npm install @mui/material @emotion/react @emotion/styled
 ## バックエンドの準備
 
 ```sh
-cargo add diesel --features sqlite
+cargo add diesel --features sqlite,chrono
 cargo add dotenv
 cargo install diesel_cli --no-default-features --features sqlite-bundled
+cargo add chrono --features serde,diesel
 ```
 
 

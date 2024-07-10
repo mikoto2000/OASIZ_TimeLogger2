@@ -1,7 +1,7 @@
 {
   "productName": "oasiz_timelogger2",
   "version": "0.0.1",
-  "identifier": "dev.mikoto2000.oasiz_timelogger2",
+  "identifier": "dev.mikoto2000.oasiz-timelogger2",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",

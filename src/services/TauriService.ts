@@ -7,8 +7,10 @@ export class TauriService implements Service {
     return logs;
   }
 
-  async getWorkLogsByDate(date: string): Promise<WorkLog[]> {
-    const logs: WorkLog[] = await invoke('get_work_logs_by_date_command', { query: { date } });
+  async getWorkLogsByDate(year: number, month: number, day: number): Promise<WorkLog[]> {
+    const logs: WorkLog[] = await invoke('get_work_logs_by_date_command', {
+      year: year, month: month, day: day
+    });
     return logs;
   }
   async createWorkLog(log: CreateLog): Promise<number> {

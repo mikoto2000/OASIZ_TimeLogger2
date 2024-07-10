@@ -1,3 +1,4 @@
+use chrono::{NaiveDate, NaiveDateTime};
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use dotenv::dotenv;
@@ -5,7 +6,6 @@ use std::env;
 use std::sync::{Arc, Mutex};
 
 use crate::models::{NewWorkLog, UpdateWorkLog, WorkLog};
-use crate::schema;
 use crate::schema::work_log::dsl::work_log;
 
 pub fn establish_connection() -> SqliteConnection {
@@ -19,13 +19,12 @@ pub fn establish_connection() -> SqliteConnection {
 pub fn create_work_log(
     conn: &Arc<Mutex<SqliteConnection>>,
     work_name: String,
-    start_date: String,
-    end_date: Option<String>,
+    start_date: NaiveDateTime,
 ) -> i32 {
     let new_work_log = NewWorkLog {
         work_name,
         start_date,
-        end_date,
+        end_date: None,
     };
 
     let mut conn = conn.lock().unwrap();
@@ -71,31 +70,38 @@ pub fn update_work_name(
 pub fn update_end_date(
     conn: &Arc<Mutex<SqliteConnection>>,
     work_no: i32,
-    end_date: Option<String>,
+    end_date: NaiveDateTime,
 ) -> usize {
-    if end_date.is_some() {
-        let updated_work_log = UpdateWorkLog {
-            work_name: None,
-            end_date: end_date,
-        };
+    let updated_work_log = UpdateWorkLog {
+        work_name: None,
+        end_date: Some(end_date),
+    };
 
-        let mut conn = conn.lock().unwrap();
-        diesel::update(work_log.find(work_no))
-            .set(&updated_work_log)
-            .execute(&mut *conn)
-            .expect("Error updating work log")
-    } else {
-        0
-    }
+    let mut conn = conn.lock().unwrap();
+    diesel::update(work_log.find(work_no))
+        .set(&updated_work_log)
+        .execute(&mut *conn)
+        .expect("Error updating work log")
 }
 
 pub fn get_work_logs_by_date(
     conn: &Arc<Mutex<SqliteConnection>>,
-    date_as_rfc3339: String,
+    year: i32,
+    month: u32,
+    day: u32,
 ) -> Vec<WorkLog> {
     let mut conn = conn.lock().unwrap();
+    let target_date_start = NaiveDate::from_ymd_opt(year, month, day).unwrap();
+    let target_date_end = NaiveDate::from_ymd_opt(year, month, day + 1).unwrap();
+
+    let target_datetime_start = NaiveDateTime::from(target_date_start);
+    let target_datetime_end = NaiveDateTime::from(target_date_end);
+
+    use crate::schema::work_log::dsl::*;
+
     work_log
-        .filter(schema::work_log::dsl::start_date.like(format!("{}%", date_as_rfc3339)))
+        .filter(start_date.ge(target_datetime_start))
+        .filter(start_date.lt(target_datetime_end))
         .load::<WorkLog>(&mut *conn)
         .expect("Error loading work logs by date")
 }

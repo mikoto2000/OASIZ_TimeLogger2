@@ -41,7 +41,7 @@ function a11yProps(index: number) {
 const App: React.FC = () => {
   const [value, setValue] = useState<number>(0);
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+  const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
 

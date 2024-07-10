@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { List, ListItem, ListItemText, Divider, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
-import { Log } from './services/Service';
+import { WorkLog } from './services/Service';
 
 interface TaskListProps {
-  logs?: Log[];
+  logs?: WorkLog[];
 }
 
 const TaskList: React.FC<TaskListProps> = ({ logs: initialLogs = [] }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [logs, setLogs] = useState<Log[]>(initialLogs);
+  const [logs, setLogs] = useState<WorkLog[]>(initialLogs);
   const [showDialog, setShowDialog] = useState<boolean>(false);
-  const [editTask, setEditTask] = useState<Log | null>(null);
+  const [editTask, setEditTask] = useState<WorkLog | null>(null);
 
   useEffect(() => {
     setLogs(initialLogs);
@@ -28,7 +28,7 @@ const TaskList: React.FC<TaskListProps> = ({ logs: initialLogs = [] }) => {
     setSelectedDate(nextDay);
   };
 
-  const handleEdit = (task: Log) => {
+  const handleEdit = (task: WorkLog) => {
     setEditTask(task);
     setShowDialog(true);
   };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { List, ListItem, ListItemText, Divider, Typography, Button, TextField } from '@mui/material';
 import { useTauriService } from './hooks/useTauriService';
 import { CreateLog, UpdateLog, WorkLog } from './services/Service';
@@ -12,13 +12,33 @@ const TaskRecorder: React.FC<TaskRecorderProps> = ({ initialLogs = [] }) => {
   const [logs, setLogs] = useState<WorkLog[]>(initialLogs);
   const [errorMessage, setErrorMessage] = useState("");
 
+  let isInitialized = false;
+
   const service = useTauriService();
+
+  useEffect(() => {
+    if (!isInitialized) {
+      const now = new Date();
+      service.getWorkLogsByDate(now.getFullYear(), now.getMonth() + 1, now.getDate())
+        .then((logs) => {
+          const newLogs = logs.map((e: any) => {
+            return {
+              workNo: e.work_no,
+              workName: e.work_name,
+              startDate: e.start_date,
+              endDate: e.end_date,
+            }
+          });
+          setLogs(newLogs);
+        })
+        .catch((e: any) => setErrorMessage(e));
+    }
+  }, []);
 
   const handleStart = () => {
     const newLog: CreateLog = {
       workName: workName,
       startDate: new Date().toISOString(),
-      endDate: null,
     };
     service.createWorkLog(newLog)
       .then((newNo) => {
@@ -27,7 +47,6 @@ const TaskRecorder: React.FC<TaskRecorderProps> = ({ initialLogs = [] }) => {
           workNo: newNo,
           workName: newLog.workName,
           startDate: newLog.startDate,
-          endDate: newLog.endDate
         };
         setLogs([addLog, ...logs]);
         setWorkName('');

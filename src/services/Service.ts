@@ -8,7 +8,6 @@ export interface WorkLog {
 export interface CreateLog {
   workName: string;
   startDate: string;
-  endDate?: string | null;
 }
 
 export interface UpdateLog {
@@ -19,7 +18,7 @@ export interface UpdateLog {
 
 export interface Service {
   getAllWorkLogs(): Promise<WorkLog[]>;
-  getWorkLogsByDate(date: string): Promise<WorkLog[]>;
+  getWorkLogsByDate(year: number, month: number, day: number): Promise<WorkLog[]>;
   createWorkLog(log: CreateLog): Promise<number>;
   updateWorkName(log: UpdateLog): Promise<void>;
   updateEndDate(log: UpdateLog): Promise<void>;
