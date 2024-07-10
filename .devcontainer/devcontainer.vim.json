@@ -4,6 +4,9 @@
     "LESSCHARSET": "utf-8",
     "SHELL": "bash"
   },
+  "appPort": [
+    "0.0.0.0:6006:6006"
+  ],
   "mounts": [
     {
       "type": "bind",
