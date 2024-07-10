@@ -124,3 +124,35 @@ npm run storybook
 ```sh
 npm install @mui/material @emotion/react @emotion/styled
 ```
+
+## バックエンドの準備
+
+```sh
+cargo add diesel --features sqlite
+cargo add dotenv
+cargo install diesel_cli --no-default-features --features sqlite-bundled
+```
+
+
+## 初版の DB 定義作成
+
+```sh
+mkdir assets
+diesel setup --database-url=asset/worklog.db
+mkdir migrations
+diesel migration generate v0.0.1
+cat << EOF > migrations/2024-07-10-075640_v0.0.1/up.sql
+create table work_log (
+  work_no integer primary key autoincrement,
+  work_name text not null,
+  start_date text not null,
+  end_date text
+);
+EOF
+cat << EOF > migrations/2024-07-10-075640_v0.0.1/down.sql
+drop table work_log;
+EOF
+diesel migration run --database-url=assets/worklog.db
+```
+
+
