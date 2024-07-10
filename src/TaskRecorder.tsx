@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { List, ListItem, ListItemText, Divider, Typography, Button, TextField } from '@mui/material';
-import { useTauriService } from './hooks/useTauriService';
-import { CreateLog, UpdateLog, WorkLog } from './services/Service';
+import { List, Divider, Typography, Button, TextField } from '@mui/material';
+import { CreateLog, Service, UpdateLog, WorkLog } from './services/Service';
+import TaskListItem from './TaskListItem';
+import { TauriService } from './services/TauriService';
 
 interface TaskRecorderProps {
-  initialLogs?: WorkLog[];
+  service: Service;
 }
 
-const TaskRecorder: React.FC<TaskRecorderProps> = ({ initialLogs = [] }) => {
+const TaskRecorder: React.FC<TaskRecorderProps> = ({ service = new TauriService() }) => {
   const [workName, setWorkName] = useState<string>('');
-  const [logs, setLogs] = useState<WorkLog[]>(initialLogs);
+  const [logs, setLogs] = useState<WorkLog[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
 
   let isInitialized = false;
-
-  const service = useTauriService();
 
   useEffect(() => {
     if (!isInitialized) {
@@ -31,7 +30,7 @@ const TaskRecorder: React.FC<TaskRecorderProps> = ({ initialLogs = [] }) => {
           });
           setLogs(newLogs);
         })
-        .catch((e: any) => setErrorMessage(e));
+        .catch((e: any) => setErrorMessage(e.message));
     }
   }, []);
 
@@ -51,7 +50,7 @@ const TaskRecorder: React.FC<TaskRecorderProps> = ({ initialLogs = [] }) => {
         setLogs([addLog, ...logs]);
         setWorkName('');
       })
-      .catch((e: any) => setErrorMessage(e));
+      .catch((e: any) => setErrorMessage(e.message));
   };
 
   const handleEnd = (workNo: number) => {
@@ -69,17 +68,6 @@ const TaskRecorder: React.FC<TaskRecorderProps> = ({ initialLogs = [] }) => {
     setLogs((logs) => [...logs]);
   };
 
-  const getElapsed = (startDate: string, endDate?: string | null) => {
-    if (!endDate) {
-      return "計算中";
-    }
-
-    const sd = Date.parse(startDate);
-    const ed = Date.parse(endDate);
-    const elapsed = (ed - sd) / (60 * 1000);
-    return elapsed.toString();
-  }
-
   return (
     <div>
       <Typography variant="h5">作業記録画面</Typography>
@@ -95,19 +83,14 @@ const TaskRecorder: React.FC<TaskRecorderProps> = ({ initialLogs = [] }) => {
       <List>
         {logs.map((log, index) => (
           <div key={log.workNo}>
-            <ListItem>
-              <ListItemText
-                primary={`作業名: ${log.workName}`}
-                secondary={
-                  <>
-                    <div>開始: {log.startDate}</div>
-                    <div>終了: {log.endDate ? log.endDate : '進行中'}</div>
-                    <div>経過時間: {getElapsed(log.startDate, log.endDate)} 分</div>
-                  </>
-                }
-              />
-              {!log.endDate && <Button onClick={() => handleEnd(log.workNo)}>記録終了</Button>}
-            </ListItem>
+            <TaskListItem
+              workNo={log.workNo}
+              workName={log.workName}
+              startDate={log.startDate}
+              endDate={log.endDate}
+              onEndClicked={() => handleEnd(log.workNo)}
+            >
+            </TaskListItem>
             {index < logs.length - 1 && <Divider />}
           </div>
         ))}
