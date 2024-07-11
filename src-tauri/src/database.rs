@@ -1,4 +1,4 @@
-use chrono::{NaiveDate, NaiveDateTime};
+use chrono::{DateTime, Local, TimeZone};
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use dotenv::dotenv;
@@ -19,11 +19,11 @@ pub fn establish_connection(default_database_url: String) -> SqliteConnection {
 pub fn create_work_log(
     conn: &Arc<Mutex<SqliteConnection>>,
     work_name: String,
-    start_date: NaiveDateTime,
+    start_date: DateTime<Local>,
 ) -> i32 {
     let new_work_log = NewWorkLog {
         work_name,
-        start_date,
+        start_date: start_date.to_rfc3339(),
         end_date: None,
     };
 
@@ -85,11 +85,11 @@ pub fn update_work_name(
 pub fn update_end_date(
     conn: &Arc<Mutex<SqliteConnection>>,
     work_no: i32,
-    end_date: NaiveDateTime,
+    end_date: DateTime<Local>,
 ) -> usize {
     let updated_work_log = UpdateWorkLog {
         work_name: None,
-        end_date: Some(end_date),
+        end_date: Some(end_date.to_rfc3339()),
     };
 
     let mut conn = conn.lock().unwrap();
@@ -106,11 +106,12 @@ pub fn get_work_logs_by_date(
     day: u32,
 ) -> Vec<WorkLog> {
     let mut conn = conn.lock().unwrap();
-    let target_date_start = NaiveDate::from_ymd_opt(year, month, day).unwrap();
-    let target_date_end = NaiveDate::from_ymd_opt(year, month, day + 1).unwrap();
 
-    let target_datetime_start = NaiveDateTime::from(target_date_start);
-    let target_datetime_end = NaiveDateTime::from(target_date_end);
+    let datetime_start = Local.with_ymd_and_hms(year, month, day, 0, 0, 0).unwrap();
+    let datetime_end = Local.with_ymd_and_hms(year, month, day + 1, 0, 0, 0).unwrap();
+
+    let target_datetime_start = datetime_start.naive_local();
+    let target_datetime_end = datetime_end.naive_local();
 
     use crate::schema::work_log::dsl::*;
 

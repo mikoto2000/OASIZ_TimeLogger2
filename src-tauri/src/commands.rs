@@ -3,7 +3,7 @@
     windows_subsystem = "windows"
 )]
 
-use chrono::DateTime;
+use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 use tauri::State;
 
@@ -39,15 +39,13 @@ pub struct UpdateWorkLog {
 pub fn create_work_log_command(
     state: State<'_, AppState>,
     work_name: String,
-    start_date: String,
+    start_date: DateTime<Local>,
 ) -> Result<i32, String> {
     println!("create_work_log_command");
     let state = state.clone();
     let conn = state.conn.clone();
 
-    let sd = DateTime::parse_from_rfc3339(&start_date).unwrap().naive_local();
-
-    Ok(create_work_log(&conn, work_name, sd))
+    Ok(create_work_log(&conn, work_name, start_date))
 }
 
 #[tauri::command]
@@ -85,14 +83,12 @@ pub fn update_work_name_command(
 pub fn update_end_date_command(
     state: State<'_, AppState>,
     work_no: i32,
-    end_date: String,
+    end_date: DateTime<Local>,
 ) -> Result<(), String> {
     let state = state.clone();
     let conn = state.conn.clone();
 
-    let ed = DateTime::parse_from_rfc3339(&end_date).unwrap().naive_local();
-
-    update_end_date(&conn, work_no, ed);
+    update_end_date(&conn, work_no, end_date);
 
     Ok(())
 }
