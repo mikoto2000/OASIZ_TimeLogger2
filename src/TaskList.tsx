@@ -22,19 +22,7 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
   useEffect(() => {
     if (!isInitialized) {
       const now = new Date();
-      service.getWorkLogsByDate(now.getFullYear(), now.getMonth() + 1, now.getDate())
-        .then((logs) => {
-          const newLogs = logs.map((e: any) => {
-            return {
-              workNo: e.work_no,
-              workName: e.work_name,
-              startDate: e.start_date,
-              endDate: e.end_date,
-            }
-          });
-          setLogs(newLogs);
-        })
-        .catch((e: any) => setErrorMessage(e.message));
+      fetchWorkLog(now.getFullYear(), now.getMonth() + 1, now.getDate());
     }
     isInitialized = true;
   }, []);
@@ -50,16 +38,34 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
     }
   }, [logs]);
 
+  const fetchWorkLog = (year: number, month: number, day: number) => {
+    service.getWorkLogsByDate(year, month, day)
+      .then((logs) => {
+        const newLogs = logs.map((e: any) => {
+          return {
+            workNo: e.work_no,
+            workName: e.work_name,
+            startDate: e.start_date,
+            endDate: e.end_date,
+          }
+        });
+        setLogs(newLogs);
+      })
+      .catch((e: any) => setErrorMessage(e.message));
+  }
+
   const handlePrevDay = () => {
     const prevDay = new Date(selectedDate);
     prevDay.setDate(prevDay.getDate() - 1);
     setSelectedDate(prevDay);
+    fetchWorkLog(prevDay.getFullYear(), prevDay.getMonth() + 1, prevDay.getDate());
   };
 
   const handleNextDay = () => {
     const nextDay = new Date(selectedDate);
     nextDay.setDate(nextDay.getDate() + 1);
     setSelectedDate(nextDay);
+    fetchWorkLog(nextDay.getFullYear(), nextDay.getMonth() + 1, nextDay.getDate());
   };
 
   const handleEdit = (task: WorkLog) => {
