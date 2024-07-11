@@ -7,7 +7,7 @@ import { TauriService } from './services/TauriService';
 import { scroller, Element } from 'react-scroll';
 
 interface TaskListProps {
-  service: Service;
+  service?: Service;
 }
 
 const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => {
