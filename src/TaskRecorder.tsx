@@ -90,6 +90,7 @@ const TaskRecorder: React.FC<TaskRecorderProps> = ({ service = new TauriService(
                 workName={log.workName}
                 startDate={log.startDate}
                 endDate={log.endDate}
+                onItemClicked={() => { setWorkName(log.workName) }}
                 onEndClicked={() => handleEnd(log.workNo)}
               >
               </TaskListItem>
