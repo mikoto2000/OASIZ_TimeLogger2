@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TaskRecorder from './TaskRecorder';
 import TaskList from './TaskList';
-import { AppBar, Tabs, Tab, CssBaseline, Box } from '@mui/material';
+import { AppBar, Tabs, Tab, Box } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './theme';
 import TabPanel, { a11yProps } from './TabPanel';
@@ -23,12 +23,12 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
     <ThemeProvider theme={theme}>
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div style={{ flexGrow: '0' }}>
-          <AppBar position='static'>
-            <Tabs value={value} onChange={handleChange}>
+          <div>
+            <Tabs value={value} indicatorColor='secondary' onChange={handleChange} variant='fullWidth'>
               <Tab label="作業記録" {...a11yProps(0)} />
               <Tab label="作業一覧" {...a11yProps(1)} />
             </Tabs>
-          </AppBar>
+          </div>
         </div>
         <div style={{ flexGrow: '1', overflowY: 'hidden' }}>
           <Box>

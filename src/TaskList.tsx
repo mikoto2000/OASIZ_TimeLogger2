@@ -90,9 +90,21 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
   return (
     <div style={{ height: 'calc(100vh - 5.5em)', display: 'flex', flexDirection: 'column' }}>
       <div style={{ flexGrow: '0' }}>
-        <Typography variant="h6">{selectedDate.toLocaleDateString()}の作業一覧</Typography>
-        <Button onClick={handlePrevDay}>前日</Button>
-        <Button onClick={handleNextDay}>翌日</Button>
+        <Typography variant="h6">
+          {selectedDate.toLocaleDateString()}の作業一覧
+        </Typography>
+        <div style={{ display: 'flex' }}>
+          <Button
+            color="primary"
+            variant="outlined"
+            style={{ flexGrow: '1' }}
+            onClick={handlePrevDay}>前日</Button>
+          <Button
+            color="primary"
+            variant="outlined"
+            style={{ flexGrow: '1' }}
+            onClick={handleNextDay}>翌日</Button>
+        </div>
         <div>{errorMessage}</div>
       </div>
       <div style={{ flexGrow: '1', overflowY: 'auto' }}>

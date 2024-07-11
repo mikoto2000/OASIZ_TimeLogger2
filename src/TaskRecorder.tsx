@@ -81,7 +81,7 @@ const TaskRecorder: React.FC<TaskRecorderProps> = ({ service = new TauriService(
           placeholder="作業名を入力"
           fullWidth
         />
-        <Button onClick={handleStart} disabled={!workName}>記録開始</Button>
+        <Button color="primary" variant="outlined" onClick={handleStart} disabled={!workName}>記録開始</Button>
         <div className="errorMessage">{errorMessage}</div>
       </div>
       <div style={{ flexGrow: '1', overflowY: 'auto' }}>
