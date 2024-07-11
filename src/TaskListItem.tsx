@@ -20,7 +20,9 @@ const TaskListItem: React.FC<TaskListItemProps> = (props: TaskListItemProps) => 
     const sd = Date.parse(startDate);
     const ed = Date.parse(endDate);
     const elapsed = (ed - sd) / (60 * 1000);
-    return elapsed.toString() + "分";
+    // 小数第3位で四捨五入
+    const printElapse = Math.round(elapsed * 100) / 100;
+    return printElapse.toString() + "分";
   };
 
   return (
