@@ -83,7 +83,7 @@ const TaskRecorder: React.FC<TaskRecorderProps> = ({ service = new TauriService(
       />
       <Button onClick={handleStart} disabled={!workName}>記録開始</Button>
       <div className="errorMessage">{errorMessage}</div>
-      <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+      <div style={{ overflowY: 'auto' }}>
         <List>
           {logs.map((log, index) => (
             <div key={log.workNo}>
