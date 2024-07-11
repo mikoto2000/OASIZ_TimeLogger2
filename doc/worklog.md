@@ -169,3 +169,12 @@ npm i -D @types/react-scroll
 ```sh
 cargo add diesel_migrations --features sqlite
 ```
+
+## 組み込み SQLite3 のライブラリを追加
+
+diesel が `v0.28.0` を要求しているようだ？
+
+```sh
+cargo add libsqlite3-sys --features bundled --vers 0.28.0
+```
+

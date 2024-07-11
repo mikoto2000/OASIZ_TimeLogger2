@@ -23,4 +23,5 @@ diesel = { version = "2.2.1", features = ["chrono", "sqlite"] }
 dotenv = "0.15.0"
 chrono = { version = "0.4.38", features = ["serde"] }
 diesel_migrations = { version = "2.2.0", features = ["sqlite"] }
+libsqlite3-sys = { version = "0.28.0", features = ["bundled"] }
 
