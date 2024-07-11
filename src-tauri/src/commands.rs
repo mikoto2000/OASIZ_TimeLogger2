@@ -9,8 +9,7 @@ use tauri::State;
 
 use crate::{
     database::{
-        create_work_log, get_all_work_logs, get_work_logs_by_date, update_end_date,
-        update_work_name,
+        create_work_log, get_all_work_logs, get_recent_work_logs, get_work_logs_by_date, update_end_date, update_work_name
     },
     models::WorkLog,
     AppState,
@@ -49,6 +48,14 @@ pub fn create_work_log_command(
     let sd = DateTime::parse_from_rfc3339(&start_date).unwrap().naive_local();
 
     Ok(create_work_log(&conn, work_name, sd))
+}
+
+#[tauri::command]
+pub fn get_recent_work_logs_command(state: State<'_, AppState>, num: i64) -> Result<Vec<WorkLog>, String> {
+    let state = state.clone();
+    let conn = state.conn.clone();
+
+    Ok(get_recent_work_logs(&conn, num))
 }
 
 #[tauri::command]

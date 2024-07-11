@@ -42,10 +42,25 @@ pub fn create_work_log(
     .expect("Error getting last inserted row id")
 }
 
+pub fn get_recent_work_logs(conn: &Arc<Mutex<SqliteConnection>>, num: i64) -> Vec<WorkLog> {
+    let mut conn = conn.lock().unwrap();
+
+    use crate::schema::work_log::dsl::*;
+
+    work_log
+        .order(start_date.desc())
+        .limit(num)
+        .load::<WorkLog>(&mut *conn)
+        .expect("Error loading work logs")
+}
+
 pub fn get_all_work_logs(conn: &Arc<Mutex<SqliteConnection>>) -> Vec<WorkLog> {
     let mut conn = conn.lock().unwrap();
 
+    use crate::schema::work_log::dsl::*;
+
     work_log
+        .order(start_date.desc())
         .load::<WorkLog>(&mut *conn)
         .expect("Error loading work logs")
 }

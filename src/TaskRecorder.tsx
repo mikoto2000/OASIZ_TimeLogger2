@@ -9,6 +9,9 @@ interface TaskRecorderProps {
 }
 
 const TaskRecorder: React.FC<TaskRecorderProps> = ({ service = new TauriService() }) => {
+  // 直近の作業として表示するアイテムの数
+  const RECENT_ITEM_NUM = 7;
+
   const [workName, setWorkName] = useState<string>('');
   const [logs, setLogs] = useState<WorkLog[]>([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -17,8 +20,7 @@ const TaskRecorder: React.FC<TaskRecorderProps> = ({ service = new TauriService(
 
   useEffect(() => {
     if (!isInitialized) {
-      const now = new Date();
-      service.getWorkLogsByDate(now.getFullYear(), now.getMonth() + 1, now.getDate())
+      service.getRecentWorkLogs(RECENT_ITEM_NUM)
         .then((logs) => {
           const newLogs = logs.map((e: any) => {
             return {

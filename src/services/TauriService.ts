@@ -2,6 +2,11 @@ import { invoke } from '@tauri-apps/api/core';
 import { Service, WorkLog, CreateLog, UpdateLog } from './Service.ts';
 
 export class TauriService implements Service {
+  async getRecentWorkLogs(num: number): Promise<WorkLog[]> {
+    const logs: WorkLog[] = await invoke('get_recent_work_logs_command', { num: num });
+    return logs;
+  }
+
   async getAllWorkLogs(): Promise<WorkLog[]> {
     const logs: WorkLog[] = await invoke('get_all_work_logs_command');
     return logs;

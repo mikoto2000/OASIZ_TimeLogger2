@@ -37,6 +37,7 @@ pub fn run() {
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
+            get_recent_work_logs_command,
             get_all_work_logs_command,
             get_work_logs_by_date_command,
             create_work_log_command,

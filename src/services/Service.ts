@@ -17,6 +17,7 @@ export interface UpdateLog {
 }
 
 export interface Service {
+  getRecentWorkLogs(num: number): Promise<WorkLog[]>;
   getAllWorkLogs(): Promise<WorkLog[]>;
   getWorkLogsByDate(year: number, month: number, day: number): Promise<WorkLog[]>;
   createWorkLog(log: CreateLog): Promise<number>;
