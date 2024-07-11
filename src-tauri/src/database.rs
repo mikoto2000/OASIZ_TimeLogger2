@@ -8,10 +8,10 @@ use std::sync::{Arc, Mutex};
 use crate::models::{NewWorkLog, UpdateWorkLog, WorkLog};
 use crate::schema::work_log::dsl::work_log;
 
-pub fn establish_connection() -> SqliteConnection {
+pub fn establish_connection(default_database_url: String) -> SqliteConnection {
     dotenv().ok();
 
-    let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let database_url = env::var("OTL_DATABASE_URL").unwrap_or(default_database_url);
     SqliteConnection::establish(&database_url)
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }

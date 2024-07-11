@@ -164,3 +164,8 @@ npm i react-scroll
 npm i -D @types/react-scroll
 ```
 
+## マイグレーションのためにライブラリを追加
+
+```sh
+cargo add diesel_migrations --features sqlite
+```
