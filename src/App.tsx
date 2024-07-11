@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import TaskRecorder from './TaskRecorder';
 import TaskList from './TaskList';
-import { AppBar, Tabs, Tab, Box } from '@mui/material';
+import { Tabs, Tab, Box, CssBaseline, useMediaQuery } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './theme';
 import TabPanel, { a11yProps } from './TabPanel';
@@ -13,6 +13,8 @@ interface AppProps {
 }
 
 const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
+  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
+
   const [value, setValue] = useState<number>(0);
 
   const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
@@ -20,7 +22,8 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={theme(prefersDarkMode ? 'dark' : 'light')}>
+      <CssBaseline />
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div style={{ flexGrow: '0' }}>
           <div>
