@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { List, Divider, Typography, Button, TextField } from '@mui/material';
+import { List, Divider, Button, TextField } from '@mui/material';
 import { CreateLog, Service, UpdateLog, WorkLog } from './services/Service';
 import TaskListItem from './TaskListItem';
 import { TauriService } from './services/TauriService';
@@ -72,18 +72,19 @@ const TaskRecorder: React.FC<TaskRecorderProps> = ({ service = new TauriService(
   };
 
   return (
-    <div>
-      <Typography variant="h5">作業記録画面</Typography>
-      <TextField
-        label="作業名"
-        value={workName}
-        onChange={(e) => setWorkName(e.target.value)}
-        placeholder="作業名を入力"
-        fullWidth
-      />
-      <Button onClick={handleStart} disabled={!workName}>記録開始</Button>
-      <div className="errorMessage">{errorMessage}</div>
-      <div style={{ overflowY: 'auto' }}>
+    <div style={{ height: 'calc(100vh - 5.5em)', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flexGrow: '0' }}>
+        <TextField
+          label="作業名"
+          value={workName}
+          onChange={(e) => setWorkName(e.target.value)}
+          placeholder="作業名を入力"
+          fullWidth
+        />
+        <Button onClick={handleStart} disabled={!workName}>記録開始</Button>
+        <div className="errorMessage">{errorMessage}</div>
+      </div>
+      <div style={{ flexGrow: '1', overflowY: 'auto' }}>
         <List>
           {logs.map((log, index) => (
             <div key={log.workNo}>
