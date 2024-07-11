@@ -1,4 +1,5 @@
 import { Button, ListItem, ListItemText } from "@mui/material"
+import { useEffect, useState } from "react";
 
 interface TaskListItemProps {
   workNo: number,
@@ -12,17 +13,26 @@ interface TaskListItemProps {
 
 const TaskListItem: React.FC<TaskListItemProps> = (props: TaskListItemProps) => {
 
+  const [now, setNow] = useState(new Date);
+
+  // 1 分ごとに経過時間を更新
+  useEffect(() => {
+    setTimeout(() => {
+      setNow(new Date());
+      console.log(now);
+    }, 60000);
+  }, [now]);
+
   const getElapsed = (startDate: string, endDate?: string | null) => {
     if (!endDate) {
-      return "計算中";
+      return getElapsed(startDate, now.toString());
     }
 
+    // 経過時間を分単位で表示
     const sd = Date.parse(startDate);
     const ed = Date.parse(endDate);
-    const elapsed = (ed - sd) / (60 * 1000);
-    // 小数第3位で四捨五入
-    const printElapse = Math.round(elapsed * 100) / 100;
-    return printElapse.toString() + "分";
+    const elapsed = Math.round((ed - sd) / (60 * 1000));
+    return elapsed.toString() + "分";
   };
 
   return (
