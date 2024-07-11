@@ -54,7 +54,7 @@ const TaskListItem: React.FC<TaskListItemProps> = (props: TaskListItemProps) => 
         }
       />
       {
-        !props.endDate
+        !props.endDate && props.onEndClicked
           ?
           <Button onClick={() => {
             if (props.onEndClicked) {
