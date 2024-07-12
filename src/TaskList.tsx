@@ -73,6 +73,10 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
     setShowDialog(true);
   };
 
+  const handleDelete = (e: WorkLog) => {
+    service.deleteWorkLog(e.workNo);
+  };
+
   const handleSave = (task: WorkLog, newName: string) => {
     const newTask: UpdateLog = {
       workNo: task.workNo,
@@ -103,6 +107,7 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
                 startDate={log.startDate}
                 endDate={log.endDate}
                 onItemClicked={() => handleEdit(log)}
+                onDeleteClicked={() => handleDelete(log)}
               />
             </Element>
             {index < logs.length - 1 && <Divider />}
@@ -123,7 +128,7 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
       <div style={{ flexGrow: '1', overflowY: 'auto' }}>
         {list(logs)}
       </div>
-      <div style={{ flexGrow: '0'}}>
+      <div style={{ flexGrow: '0' }}>
         <div style={{ display: 'flex' }}>
           <Button
             color="primary"
@@ -151,9 +156,7 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>キャンセル</Button>
-          <Button onClick={(e) => {
-            console.log(e);
-            console.log(editTask);
+          <Button onClick={() => {
             if (editTask) {
               handleSave(editTask, editTask.workName);
               const targetLog = logs.find((e) => e.workNo === editTask.workNo);

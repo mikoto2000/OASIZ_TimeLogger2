@@ -29,5 +29,9 @@ export class TauriService implements Service {
   async updateEndDate(log: UpdateLog): Promise<void> {
     await invoke('update_end_date_command', { ...log });
   }
+
+  async deleteWorkLog(workNo: number): Promise<void> {
+    await invoke('delete_work_log_command', { workNo: workNo });
+  }
 }
 

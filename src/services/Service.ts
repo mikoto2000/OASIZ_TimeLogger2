@@ -23,5 +23,6 @@ export interface Service {
   createWorkLog(log: CreateLog): Promise<number>;
   updateWorkName(log: UpdateLog): Promise<void>;
   updateEndDate(log: UpdateLog): Promise<void>;
+  deleteWorkLog(workNo: number): Promise<void>;
 }
 
