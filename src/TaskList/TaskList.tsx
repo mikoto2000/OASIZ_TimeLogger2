@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { List, Divider, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
-import { Service, UpdateLog, WorkLog } from './services/Service';
-import TaskListItem from './TaskListItem';
-import { TauriService } from './services/TauriService';
-
-import { scroller, Element } from 'react-scroll';
+import { List, Divider, Typography, Button } from '@mui/material';
+import { Service, WorkLog } from '../services/Service';
+import { TauriService } from '../services/TauriService';
+import TaskListItem from '../commons/TaskListItem';
+import WorkLogEditDialog from './WorkLogEditDialog';
 
 interface TaskListProps {
   service?: Service;
@@ -13,7 +12,10 @@ interface TaskListProps {
 const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [logs, setLogs] = useState<WorkLog[]>([]);
+
+  // 作業名編集ダイアログ
   const [showDialog, setShowDialog] = useState<boolean>(false);
+
   const [errorMessage, setErrorMessage] = useState("");
   const [editTask, setEditTask] = useState<WorkLog | null>(null);
 
@@ -26,17 +28,6 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
     }
     isInitialized = true;
   }, []);
-
-  useEffect(() => {
-    if (editTask) {
-      scroller.scrollTo(editTask.workNo.toString(), {
-        duration: 500,
-        delay: 0,
-        smooth: "easeInOutQuart",
-        offset: 0
-      });
-    }
-  }, [logs]);
 
   const fetchWorkLog = (year: number, month: number, day: number) => {
     service.getWorkLogsByDate(year, month, day)
@@ -80,20 +71,6 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
     setLogs([...newLogs]);
   };
 
-  const handleSave = (task: WorkLog, newName: string) => {
-    const newTask: UpdateLog = {
-      workNo: task.workNo,
-      workName: newName,
-      endDate: task.endDate,
-    };
-    service.updateWorkName(newTask);
-    setShowDialog(false);
-  };
-
-  const handleClose = () => {
-    setShowDialog(false);
-  };
-
   const list = (logs: WorkLog[]) => {
     if (logs.length === 0) {
       return <p>ログデータがありません。</p>
@@ -103,16 +80,14 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
       <List>
         {logs.map((log, index) => (
           <div key={index}>
-            <Element name={log.workNo.toString()}>
-              <TaskListItem
-                workNo={log.workNo}
-                workName={log.workName}
-                startDate={log.startDate}
-                endDate={log.endDate}
-                onItemClicked={() => handleEdit(log)}
-                onDeleteClicked={() => handleDelete(log)}
-              />
-            </Element>
+            <TaskListItem
+              workNo={log.workNo}
+              workName={log.workName}
+              startDate={log.startDate}
+              endDate={log.endDate}
+              onItemClicked={() => handleEdit(log)}
+              onDeleteClicked={() => handleDelete(log)}
+            />
             {index < logs.length - 1 && <Divider />}
           </div>
         ))}
@@ -145,32 +120,22 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
             onClick={handleNextDay}>翌日</Button>
         </div>
       </div>
-      <Dialog open={showDialog} onClose={handleClose}>
-        <DialogTitle>作業名編集</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="作業名"
-            fullWidth
-            value={editTask?.workName || ''}
-            onChange={(e) => setEditTask(editTask ? { ...editTask, workName: e.target.value } : null)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>キャンセル</Button>
-          <Button onClick={() => {
-            if (editTask) {
-              handleSave(editTask, editTask.workName);
-              const targetLog = logs.find((e) => e.workNo === editTask.workNo);
-              if (targetLog) {
-                targetLog.workName = editTask.workName;
-                setLogs([...logs]);
-              }
+      <WorkLogEditDialog
+        initialWorkName={editTask?.workName ?? ''}
+        show={showDialog}
+        onSave={(newTaskName: string) => {
+          if (editTask) {
+            const targetLog = logs.find((e) => e.workNo === editTask.workNo);
+            if (targetLog) {
+              targetLog.workName = newTaskName;
+              service.updateWorkName(targetLog);
+              setLogs([...logs]);
             }
-          }}>保存</Button>
-        </DialogActions>
-      </Dialog>
+            setShowDialog(false);
+          }
+        }}
+        onClose={() => { setShowDialog(false) }}
+      ></WorkLogEditDialog>
     </div>
   );
 };

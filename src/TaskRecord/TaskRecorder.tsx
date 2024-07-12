@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { List, Divider, Button, TextField } from '@mui/material';
-import { CreateLog, Service, UpdateLog, WorkLog } from './services/Service';
-import TaskListItem from './TaskListItem';
-import { TauriService } from './services/TauriService';
+import { CreateLog, Service, UpdateLog, WorkLog } from '../services/Service';
+import { TauriService } from '../services/TauriService';
+import TaskListItem from '../commons/TaskListItem';
 
 interface TaskRecorderProps {
   service: Service;

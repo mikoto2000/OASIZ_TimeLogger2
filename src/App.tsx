@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import TaskRecorder from './TaskRecorder';
-import TaskList from './TaskList';
+import TaskRecorder from './TaskRecord/TaskRecorder';
+import TaskList from './TaskList/TaskList';
 import { Tabs, Tab, Box, CssBaseline, useMediaQuery, Drawer, Menu, MenuItem, ButtonGroup, Button, Divider, Dialog } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { ThemeProvider } from '@mui/material/styles';
