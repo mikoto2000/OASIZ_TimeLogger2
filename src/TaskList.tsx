@@ -87,6 +87,31 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
     setShowDialog(false);
   };
 
+  const list = (logs: WorkLog[]) => {
+    if (logs.length === 0) {
+      return <p>ログデータがありません。</p>
+    }
+
+    return (
+      <List>
+        {logs.map((log, index) => (
+          <div key={index}>
+            <Element name={log.workNo.toString()}>
+              <TaskListItem
+                workNo={log.workNo}
+                workName={log.workName}
+                startDate={log.startDate}
+                endDate={log.endDate}
+                onItemClicked={() => handleEdit(log)}
+              />
+            </Element>
+            {index < logs.length - 1 && <Divider />}
+          </div>
+        ))}
+      </List>
+    );
+  }
+
   return (
     <div style={{ height: 'calc(100vh - 5.5em)', display: 'flex', flexDirection: 'column' }}>
       <div style={{ flexGrow: '0' }}>
@@ -108,22 +133,7 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
         <div>{errorMessage}</div>
       </div>
       <div style={{ flexGrow: '1', overflowY: 'auto' }}>
-        <List>
-          {logs.map((log, index) => (
-            <div key={index}>
-              <Element name={log.workNo.toString()}>
-                <TaskListItem
-                  workNo={log.workNo}
-                  workName={log.workName}
-                  startDate={log.startDate}
-                  endDate={log.endDate}
-                  onItemClicked={() => handleEdit(log)}
-                />
-              </Element>
-              {index < logs.length - 1 && <Divider />}
-            </div>
-          ))}
-        </List>
+        {list(logs)}
       </div>
       <Dialog open={showDialog} onClose={handleClose}>
         <DialogTitle>作業名編集</DialogTitle>
