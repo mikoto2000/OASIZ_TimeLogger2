@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import TaskRecorder from './TaskRecorder';
 import TaskList from './TaskList';
-import { Tabs, Tab, Box, CssBaseline, useMediaQuery, Drawer, Menu, MenuItem, ButtonGroup, Button, Divider } from '@mui/material';
+import { Tabs, Tab, Box, CssBaseline, useMediaQuery, Drawer, Menu, MenuItem, ButtonGroup, Button, Divider, Dialog } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './theme';
@@ -23,6 +23,8 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
   const [tabIndex, setTabIndex] = useState<number>(0);
 
   const [showMenu, setShowMenu] = useState<boolean>(false);
+
+  const [showExportDialog, setShowExportDialog] = useState<boolean>(false);
 
   const menuIcon = useRef(null);
 
@@ -82,7 +84,18 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
           open={showMenu}
           onClose={() => setShowMenu(false)}
         >
-          <MenuItem>作業記録エクスポート</MenuItem>
+          <MenuItem
+          >作業記録エクスポート</MenuItem>
+          <MenuItem>
+            <ButtonGroup>
+              <Button onClick={() => {
+                setShowExportDialog(true)
+              }}>CSV</Button>
+              <Button onClick={() => {
+                setShowExportDialog(true)
+              }}>JSON</Button>
+            </ButtonGroup>
+          </MenuItem>
           <Divider />
           <MenuItem
           >ライトモード・ダークモード切替
@@ -104,9 +117,14 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
             </ButtonGroup>
           </MenuItem>
           <Divider />
-          <MenuItem>ライセンス情報</MenuItem>
+          <MenuItem
+          >ライセンス情報</MenuItem>
         </Menu>
       </Drawer>
+      <Dialog
+        open={showExportDialog}
+        onClose={() => { setShowExportDialog(false) }} >
+      </Dialog>
     </ThemeProvider >
   );
 };
