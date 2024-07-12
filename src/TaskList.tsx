@@ -118,6 +118,12 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
         <Typography variant="h6">
           {selectedDate.toLocaleDateString()}の作業一覧
         </Typography>
+        <div>{errorMessage}</div>
+      </div>
+      <div style={{ flexGrow: '1', overflowY: 'auto' }}>
+        {list(logs)}
+      </div>
+      <div style={{ flexGrow: '0'}}>
         <div style={{ display: 'flex' }}>
           <Button
             color="primary"
@@ -130,10 +136,6 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
             style={{ flexGrow: '1' }}
             onClick={handleNextDay}>翌日</Button>
         </div>
-        <div>{errorMessage}</div>
-      </div>
-      <div style={{ flexGrow: '1', overflowY: 'auto' }}>
-        {list(logs)}
       </div>
       <Dialog open={showDialog} onClose={handleClose}>
         <DialogTitle>作業名編集</DialogTitle>
