@@ -15,10 +15,10 @@ interface AppProps {
 const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
-  const [value, setValue] = useState<number>(0);
+  const [tabIndex, setTabIndex] = useState<number>(0);
 
   const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
-    setValue(newValue);
+    setTabIndex(newValue);
   };
 
   return (
@@ -27,7 +27,7 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div style={{ flexGrow: '0' }}>
           <div>
-            <Tabs value={value} indicatorColor='secondary' onChange={handleChange} variant='fullWidth'>
+            <Tabs value={tabIndex} indicatorColor='secondary' onChange={handleChange} variant='fullWidth'>
               <Tab label="作業記録" {...a11yProps(0)} />
               <Tab label="作業一覧" {...a11yProps(1)} />
             </Tabs>
@@ -35,10 +35,10 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
         </div>
         <div style={{ flexGrow: '1', overflowY: 'hidden' }}>
           <Box>
-            <TabPanel value={value} index={0}>
+            <TabPanel value={tabIndex} index={0}>
               <TaskRecorder service={service} />
             </TabPanel>
-            <TabPanel value={value} index={1}>
+            <TabPanel value={tabIndex} index={1}>
               <TaskList />
             </TabPanel>
           </Box>
