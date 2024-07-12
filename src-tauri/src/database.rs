@@ -1,4 +1,4 @@
-use chrono::{DateTime, Local, TimeZone};
+use chrono::{DateTime, Duration, Local, TimeZone};
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use dotenv::dotenv;
@@ -108,7 +108,8 @@ pub fn get_work_logs_by_date(
     let mut conn = conn.lock().unwrap();
 
     let datetime_start = Local.with_ymd_and_hms(year, month, day, 0, 0, 0).unwrap();
-    let datetime_end = Local.with_ymd_and_hms(year, month, day + 1, 0, 0, 0).unwrap();
+    let one_day = Duration::days(1);
+    let datetime_end = datetime_start + one_day;
 
     let target_datetime_start = datetime_start.naive_local();
     let target_datetime_end = datetime_end.naive_local();
