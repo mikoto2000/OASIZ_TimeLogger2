@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import TaskRecorder from './TaskRecorder';
 import TaskList from './TaskList';
-import { Tabs, Tab, Box, CssBaseline, useMediaQuery, Drawer, Menu, MenuItem, Dialog, ButtonGroup, Button } from '@mui/material';
+import { Tabs, Tab, Box, CssBaseline, useMediaQuery, Drawer, Menu, MenuItem, ButtonGroup, Button, Divider } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './theme';
@@ -23,8 +23,6 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
   const [tabIndex, setTabIndex] = useState<number>(0);
 
   const [showMenu, setShowMenu] = useState<boolean>(false);
-
-  const [showDisplayModeDialog, setShowDisplayModeDialog] = useState<boolean>(false);
 
   const menuIcon = useRef(null);
 
@@ -85,37 +83,33 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
           onClose={() => setShowMenu(false)}
         >
           <MenuItem>作業記録エクスポート</MenuItem>
+          <Divider />
           <MenuItem
-            onClick={() => { setShowDisplayModeDialog(true) }}
-          >ライトモード・ダークモード切替</MenuItem>
+          >ライトモード・ダークモード切替
+          </MenuItem>
+          <MenuItem>
+            <ButtonGroup>
+              <Button onClick={() => {
+                setSelectedDisplayMode(undefined);
+                setShowMenu(false);
+              }}>システム</Button>
+              <Button onClick={() => {
+                setSelectedDisplayMode('light');
+                setShowMenu(false);
+              }}>ライト</Button>
+              <Button onClick={() => {
+                setSelectedDisplayMode('dark');
+                setShowMenu(false);
+              }}>ダーク</Button>
+            </ButtonGroup>
+          </MenuItem>
+          <Divider />
           <MenuItem>ライセンス情報</MenuItem>
         </Menu>
-        <Dialog
-          open={showDisplayModeDialog}
-          onClose={() => { setShowDisplayModeDialog(false) }} >
-          <ButtonGroup>
-            <Button onClick={() => {
-              setSelectedDisplayMode(undefined);
-              setShowDisplayModeDialog(false);
-              setShowMenu(false);
-            }}>システム</Button>
-            <Button onClick={() => {
-              setSelectedDisplayMode('light');
-              setShowDisplayModeDialog(false);
-              setShowMenu(false);
-            }}>ライト</Button>
-            <Button onClick={() => {
-              setSelectedDisplayMode('dark');
-              setShowDisplayModeDialog(false);
-              setShowMenu(false);
-            }}>ダーク</Button>
-          </ButtonGroup>
-        </Dialog>
       </Drawer>
-    </ThemeProvider>
+    </ThemeProvider >
   );
 };
 
 export default App;
-
 
