@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import TaskRecorder from './TaskRecord/TaskRecorder';
 import TaskList from './TaskList/TaskList';
-import { Tabs, Tab, Box, CssBaseline, useMediaQuery, Drawer, Menu, MenuItem, ButtonGroup, Button, Divider, Dialog } from '@mui/material';
+import { Tabs, Tab, Box, CssBaseline, useMediaQuery, Drawer, Menu, MenuItem, ButtonGroup, Button, Divider, Dialog, DialogContent } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from './theme';
@@ -9,6 +9,7 @@ import TabPanel, { a11yProps } from './TabPanel';
 import { Service } from './services/Service';
 import { TauriService } from './services/TauriService';
 import { DisplayMode } from './Types';
+import FileExporter, { ExportType } from './export/FileExporter';
 
 interface AppProps {
   service?: Service;
@@ -23,6 +24,7 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
 
   const [showMenu, setShowMenu] = useState<boolean>(false);
 
+  const [exportType, setExportType] = useState<ExportType>('json');
   const [showExportDialog, setShowExportDialog] = useState<boolean>(false);
 
   const menuIcon = useRef(null);
@@ -30,7 +32,6 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
   useEffect(() => {
     (async () => {
       const mode = await service.getDisplayMode();
-      console.log(mode);
       setCurrentDisplayMode(mode);
     })();
   }, []);
@@ -89,9 +90,11 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
           <MenuItem>
             <ButtonGroup>
               <Button onClick={() => {
+                setExportType('csv')
                 setShowExportDialog(true)
               }}>CSV</Button>
               <Button onClick={() => {
+                setExportType('json')
                 setShowExportDialog(true)
               }}>JSON</Button>
             </ButtonGroup>
@@ -130,6 +133,12 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
       <Dialog
         open={showExportDialog}
         onClose={() => { setShowExportDialog(false) }} >
+        <DialogContent>
+          <FileExporter
+            exportType={exportType}
+            service={service}>
+          </FileExporter>
+        </DialogContent>
       </Dialog>
     </ThemeProvider >
   );

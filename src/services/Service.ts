@@ -25,6 +25,13 @@ export interface Service {
   // DB
   getRecentWorkLogs(num: number): Promise<WorkLog[]>;
   getAllWorkLogs(): Promise<WorkLog[]>;
+  getWorkLogs(
+    fromYear: number,
+    fromMonth: number,
+    fromDay: number,
+    toYear: number,
+    toMonth: number,
+    toDay: number): Promise<WorkLog[]>;
   getWorkLogsByDate(year: number, month: number, day: number): Promise<WorkLog[]>;
   createWorkLog(log: CreateLog): Promise<number>;
   updateWorkName(log: UpdateLog): Promise<void>;
