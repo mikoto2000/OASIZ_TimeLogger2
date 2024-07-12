@@ -9,7 +9,7 @@ use tauri::State;
 
 use crate::{
     database::{
-        create_work_log, get_all_work_logs, get_recent_work_logs, get_work_logs_by_date, update_end_date, update_work_name
+        create_work_log, delete_work_log, get_all_work_logs, get_recent_work_logs, get_work_logs_by_date, update_end_date, update_work_name
     },
     models::WorkLog,
     AppState,
@@ -92,6 +92,20 @@ pub fn update_end_date_command(
 
     Ok(())
 }
+
+#[tauri::command]
+pub fn delete_work_log_command(
+    state: State<'_, AppState>,
+    work_no: i32,
+) -> Result<(), String> {
+    let state = state.clone();
+    let conn = state.conn.clone();
+
+    delete_work_log(&conn, work_no);
+
+    Ok(())
+}
+
 
 #[tauri::command]
 pub fn get_work_logs_by_date_command(

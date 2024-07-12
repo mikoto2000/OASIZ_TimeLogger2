@@ -73,8 +73,11 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
     setShowDialog(true);
   };
 
-  const handleDelete = (e: WorkLog) => {
-    service.deleteWorkLog(e.workNo);
+  const handleDelete = (deleteTask: WorkLog) => {
+    service.deleteWorkLog(deleteTask.workNo);
+    // 削除対象以外を抽出
+    const newLogs = logs.filter((e) => e.workNo !== deleteTask.workNo);
+    setLogs([...newLogs]);
   };
 
   const handleSave = (task: WorkLog, newName: string) => {

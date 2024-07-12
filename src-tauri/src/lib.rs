@@ -43,6 +43,7 @@ pub fn run() {
             create_work_log_command,
             update_work_name_command,
             update_end_date_command,
+            delete_work_log_command,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -99,6 +99,13 @@ pub fn update_end_date(
         .expect("Error updating work log")
 }
 
+pub fn delete_work_log(conn: &Arc<Mutex<SqliteConnection>>, work_no: i32) -> usize {
+    let mut conn = conn.lock().unwrap();
+    diesel::delete(work_log.filter(crate::schema::work_log::dsl::work_no.eq(work_no)))
+        .execute(&mut *conn)
+        .expect("Error delete work log")
+}
+
 pub fn get_work_logs_by_date(
     conn: &Arc<Mutex<SqliteConnection>>,
     year: i32,
