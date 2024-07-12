@@ -21,7 +21,6 @@ struct AppState {
 pub fn run() {
     tauri::Builder::default()
         .setup(|app| {
-
             // DB コネクションを貼って State として管理してもらう
             let app_local_data_dir = app.path().app_local_data_dir().unwrap();
             let db_path = app_local_data_dir.join("worklog.db");
@@ -32,7 +31,6 @@ pub fn run() {
             app.manage(AppState {
                 conn: Arc::new(Mutex::new(conn)),
             });
-
 
             Ok(())
         })
@@ -45,6 +43,7 @@ pub fn run() {
             update_end_date_command,
             delete_work_log_command,
         ])
+        .plugin(tauri_plugin_store::Builder::default().build())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -1,3 +1,5 @@
+import { DisplayMode } from "../Types";
+
 export interface WorkLog {
   workNo: number;
   workName: string;
@@ -17,6 +19,10 @@ export interface UpdateLog {
 }
 
 export interface Service {
+  // Setting
+  saveDisplayMode(mode: DisplayMode): Promise<void>;
+  getDisplayMode(): Promise<DisplayMode>;
+  // DB
   getRecentWorkLogs(num: number): Promise<WorkLog[]>;
   getAllWorkLogs(): Promise<WorkLog[]>;
   getWorkLogsByDate(year: number, month: number, day: number): Promise<WorkLog[]>;

@@ -1,6 +1,14 @@
+import { DisplayMode } from "../Types";
 import { CreateLog, Service, UpdateLog, WorkLog } from "./Service";
 
 export const mockService_0: Service = {
+  saveDisplayMode: async function(_: DisplayMode) {
+  },
+
+  getDisplayMode: async function(): Promise<DisplayMode> {
+    return 'light';
+  },
+
   getRecentWorkLogs: async function(): Promise<WorkLog[]> {
     return [];
   },
@@ -16,11 +24,17 @@ export const mockService_0: Service = {
   updateWorkName: async function(_log: UpdateLog): Promise<void> {
   },
   updateEndDate: async function(_log: UpdateLog): Promise<void> {
+  },
+  deleteWorkLog: async function(_workNo: number): Promise<void> {
   }
 };
 
-
 export const mockService_3: Service = {
+  saveDisplayMode: async function(_: DisplayMode) {
+  },
+  getDisplayMode: async function(): Promise<DisplayMode> {
+    return 'light';
+  },
   getRecentWorkLogs: async function(_num: number): Promise<any[]> {
     return [{
       work_no: 1,
@@ -70,6 +84,8 @@ export const mockService_3: Service = {
   updateWorkName: async function(_log: UpdateLog): Promise<void> {
   },
   updateEndDate: async function(_log: UpdateLog): Promise<void> {
+  },
+  deleteWorkLog: async function(_workNo: number): Promise<void> {
   }
 };
 

@@ -175,6 +175,13 @@ cargo add diesel_migrations --features sqlite
 diesel が `v0.28.0` を要求しているようだ？
 
 ```sh
-cargo add libsqlite3-sys --features bundled --vers 0.28.0
+cargo add libsqlite3-sys@0.28.0 --features bundled
+```
+
+## 設定保存のために Store プラグインを導入
+
+```sh
+cargo add tauri-plugin-store@2.0.0-beta
+npm add @tauri-apps/plugin-store
 ```
 

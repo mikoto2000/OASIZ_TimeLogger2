@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import TaskRecorder from './TaskRecord/TaskRecorder';
 import TaskList from './TaskList/TaskList';
 import { Tabs, Tab, Box, CssBaseline, useMediaQuery, Drawer, Menu, MenuItem, ButtonGroup, Button, Divider, Dialog } from '@mui/material';
@@ -8,17 +8,16 @@ import { theme } from './theme';
 import TabPanel, { a11yProps } from './TabPanel';
 import { Service } from './services/Service';
 import { TauriService } from './services/TauriService';
+import { DisplayMode } from './Types';
 
 interface AppProps {
   service?: Service;
 }
 
-type DisplayMode = 'dark' | 'light';
-
 const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
 
-  const [selectedDisplayMode, setSelectedDisplayMode] = useState<DisplayMode | undefined>(undefined);
+  const [currentDisplayMode, setCurrentDisplayMode] = useState<DisplayMode>('light');
 
   const [tabIndex, setTabIndex] = useState<number>(0);
 
@@ -28,21 +27,22 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
 
   const menuIcon = useRef(null);
 
+  useEffect(() => {
+    (async () => {
+      const mode = await service.getDisplayMode();
+      console.log(mode);
+      setCurrentDisplayMode(mode);
+    })();
+  }, []);
+
   const handleChange = (_: React.ChangeEvent<{}>, newValue: number) => {
     setTabIndex(newValue);
   };
 
-  const calculateDisplayMode = (): DisplayMode => {
-    if (selectedDisplayMode) {
-      return selectedDisplayMode
-    } else {
-      return prefersDarkMode ? 'dark' : 'light'
-    }
 
-  }
 
   return (
-    <ThemeProvider theme={theme(calculateDisplayMode())}>
+    <ThemeProvider theme={theme(currentDisplayMode)}>
       <CssBaseline />
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div style={{ flexGrow: '0' }}>
@@ -103,15 +103,21 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
           <MenuItem>
             <ButtonGroup>
               <Button onClick={() => {
-                setSelectedDisplayMode(undefined);
+                const mode = prefersDarkMode ? 'dark' : 'light';
+                service.saveDisplayMode(mode);
+                setCurrentDisplayMode(mode);
                 setShowMenu(false);
               }}>システム</Button>
               <Button onClick={() => {
-                setSelectedDisplayMode('light');
+                const mode = 'light';
+                service.saveDisplayMode(mode);
+                setCurrentDisplayMode(mode);
                 setShowMenu(false);
               }}>ライト</Button>
               <Button onClick={() => {
-                setSelectedDisplayMode('dark');
+                const mode = 'dark';
+                service.saveDisplayMode(mode);
+                setCurrentDisplayMode(mode);
                 setShowMenu(false);
               }}>ダーク</Button>
             </ButtonGroup>
