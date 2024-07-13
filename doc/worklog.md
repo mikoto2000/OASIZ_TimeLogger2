@@ -198,3 +198,10 @@ npm i dayjs
 ```sh
 npm i @json2csv/plainjs
 ```
+
+## ビルド時に NOTICE ファイルをプログラムに埋め込むために vite plugin を追加
+
+```sh
+npm i -D vite-plugin-string
+```
+

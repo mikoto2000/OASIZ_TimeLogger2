@@ -11,6 +11,8 @@ import { TauriService } from './services/TauriService';
 import { DisplayMode } from './Types';
 import FileExporter, { ExportType } from './export/FileExporter';
 
+import notice from "../NOTICE.md";
+
 interface AppProps {
   service?: Service;
 }
@@ -26,6 +28,8 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
 
   const [exportType, setExportType] = useState<ExportType>('json');
   const [showExportDialog, setShowExportDialog] = useState<boolean>(false);
+
+  const [showNoticeDialog, setShowNoticeDialog] = useState<boolean>(false);
 
   const menuIcon = useRef(null);
 
@@ -127,6 +131,7 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
           </MenuItem>
           <Divider />
           <MenuItem
+            onClick={() => { setShowNoticeDialog(true) }}
           >ライセンス情報</MenuItem>
         </Menu>
       </Drawer>
@@ -138,6 +143,15 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
             exportType={exportType}
             service={service}>
           </FileExporter>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={showNoticeDialog}
+        onClose={() => { setShowNoticeDialog(false) }} >
+        <DialogContent>
+          <pre style={{ fontSize:"0.75em"}}>
+            {notice}
+          </pre>
         </DialogContent>
       </Dialog>
     </ThemeProvider >
