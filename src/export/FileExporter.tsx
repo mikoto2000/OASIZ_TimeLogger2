@@ -1,4 +1,4 @@
-import { Box, Button } from "@mui/material";
+import { Box, Button, Container, Stack } from "@mui/material";
 import { Service } from "../services/Service";
 import { TauriService } from "../services/TauriService";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -53,7 +53,7 @@ const FileExporter: React.FC<FileExporterProps> = ({ exportType, service = new T
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box>
+      <Stack spacing={2}>
         <DatePicker
           label="開始日"
           value={fromDate}
@@ -65,7 +65,7 @@ const FileExporter: React.FC<FileExporterProps> = ({ exportType, service = new T
           onChange={(newValue) => setToDate(newValue)}
         ></DatePicker>
         <Button onClick={exportWorkLog}>エクスポート</Button>
-      </Box>
+      </Stack>
     </LocalizationProvider>
   )
 }
