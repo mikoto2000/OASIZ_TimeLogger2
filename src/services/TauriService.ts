@@ -33,8 +33,7 @@ export class TauriService implements Service {
     toYear: number,
     toMonth: number,
     toDay: number): Promise<WorkLog[]> {
-    // TODO: バックエンドの実装が終わったら、コマンド名を修正する
-    const logs: WorkLog[] = await invoke('get_all_work_logs_command', {
+    const logs: WorkLog[] = await invoke('get_work_logs_command', {
       fromYear, fromMonth, fromDay,
       toYear, toMonth, toDay,
     });

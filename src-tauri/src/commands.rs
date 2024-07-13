@@ -9,7 +9,7 @@ use tauri::State;
 
 use crate::{
     database::{
-        create_work_log, delete_work_log, get_all_work_logs, get_recent_work_logs, get_work_logs_by_date, update_end_date, update_work_name
+        create_work_log, delete_work_log, get_all_work_logs, get_recent_work_logs, get_work_logs, get_work_logs_by_date, update_end_date, update_work_name
     },
     models::WorkLog,
     AppState,
@@ -49,7 +49,10 @@ pub fn create_work_log_command(
 }
 
 #[tauri::command]
-pub fn get_recent_work_logs_command(state: State<'_, AppState>, num: i64) -> Result<Vec<WorkLog>, String> {
+pub fn get_recent_work_logs_command(
+    state: State<'_, AppState>,
+    num: i64,
+) -> Result<Vec<WorkLog>, String> {
     let state = state.clone();
     let conn = state.conn.clone();
 
@@ -62,6 +65,24 @@ pub fn get_all_work_logs_command(state: State<'_, AppState>) -> Result<Vec<WorkL
     let conn = state.conn.clone();
 
     Ok(get_all_work_logs(&conn))
+}
+
+#[tauri::command]
+pub fn get_work_logs_command(
+    state: State<'_, AppState>,
+    from_year: i32,
+    from_month: u32,
+    from_day: u32,
+    to_year: i32,
+    to_month: u32,
+    to_day: u32,
+) -> Result<Vec<WorkLog>, String> {
+    let state = state.clone();
+    let conn = state.conn.clone();
+
+    Ok(get_work_logs(
+        &conn, from_year, from_month, from_day, to_year, to_month, to_day,
+    ))
 }
 
 #[tauri::command]
@@ -94,10 +115,7 @@ pub fn update_end_date_command(
 }
 
 #[tauri::command]
-pub fn delete_work_log_command(
-    state: State<'_, AppState>,
-    work_no: i32,
-) -> Result<(), String> {
+pub fn delete_work_log_command(state: State<'_, AppState>, work_no: i32) -> Result<(), String> {
     let state = state.clone();
     let conn = state.conn.clone();
 
@@ -105,7 +123,6 @@ pub fn delete_work_log_command(
 
     Ok(())
 }
-
 
 #[tauri::command]
 pub fn get_work_logs_by_date_command(

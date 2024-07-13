@@ -65,6 +65,35 @@ pub fn get_all_work_logs(conn: &Arc<Mutex<SqliteConnection>>) -> Vec<WorkLog> {
         .expect("Error loading work logs")
 }
 
+pub fn get_work_logs(
+    conn: &Arc<Mutex<SqliteConnection>>,
+    from_year: i32,
+    from_month: u32,
+    from_day: u32,
+    to_year: i32,
+    to_month: u32,
+    to_day: u32,
+) -> Vec<WorkLog> {
+    let mut conn = conn.lock().unwrap();
+
+    use crate::schema::work_log::dsl::*;
+
+    let datetime_start = Local.with_ymd_and_hms(from_year, from_month, from_day, 0, 0, 0).unwrap();
+    let one_day = Duration::days(1);
+    let datetime_end = Local.with_ymd_and_hms(to_year, to_month, to_day, 0, 0, 0).unwrap();
+    let datetime_end = datetime_end + one_day;
+
+    let target_datetime_start = datetime_start.naive_local();
+    let target_datetime_end = datetime_end.naive_local();
+
+    work_log
+        .filter(start_date.ge(target_datetime_start))
+        .filter(start_date.lt(target_datetime_end))
+        .order(start_date.desc())
+        .load::<WorkLog>(&mut *conn)
+        .expect("Error loading work logs by date")
+}
+
 pub fn update_work_name(
     conn: &Arc<Mutex<SqliteConnection>>,
     work_no: i32,

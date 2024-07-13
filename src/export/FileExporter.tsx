@@ -22,11 +22,11 @@ const FileExporter: React.FC<FileExporterProps> = ({ exportType, service = new T
     if (fromDate && toDate) {
       const logs = await service.getWorkLogs(
         fromDate.year(),
-        fromDate.month(),
-        fromDate.day(),
+        fromDate.month() + 1,
+        fromDate.date(),
         toDate.year(),
-        toDate.month(),
-        toDate.day(),
+        toDate.month() + 1,
+        toDate.date(),
       );
 
       let data;
