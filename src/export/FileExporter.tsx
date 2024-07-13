@@ -1,10 +1,11 @@
-import { Box, Button, Container, Stack } from "@mui/material";
+import {Button, Stack } from "@mui/material";
 import { Service } from "../services/Service";
 import { TauriService } from "../services/TauriService";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
+import { Parser } from '@json2csv/plainjs';
 
 export type ExportType = 'json' | 'csv';
 
@@ -33,11 +34,17 @@ const FileExporter: React.FC<FileExporterProps> = ({ exportType, service = new T
       if (exportType === 'json') {
         data = JSON.stringify(logs);
       } else {
-        // TODO: CSV 対応
         data = JSON.stringify(logs);
+        try {
+          const parser = new Parser({
+            fields: ["work_no", "work_name", "start_date", "end_date"]
+          });
+          const csv = parser.parse(logs);
+          data = csv;
+        } catch (err) {
+          console.error(err);
+        }
       }
-
-      console.log(data);
 
       // Blob を作成
       const blob = new Blob([data], { type: 'text/plain' });
