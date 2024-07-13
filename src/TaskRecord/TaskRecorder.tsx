@@ -10,7 +10,7 @@ interface TaskRecorderProps {
 
 const TaskRecorder: React.FC<TaskRecorderProps> = ({ service = new TauriService() }) => {
   // 直近の作業として表示するアイテムの数
-  const RECENT_ITEM_NUM = 7;
+  const RECENT_ITEM_NUM = 15;
 
   const [workName, setWorkName] = useState<string>('');
   const [logs, setLogs] = useState<WorkLog[]>([]);
