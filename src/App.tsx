@@ -150,7 +150,7 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
         onClose={() => { setShowNoticeDialog(false) }} >
         <DialogContent>
           <pre style={{ fontSize:"0.75em"}}>
-            {notice}
+            {(notice as any)}
           </pre>
         </DialogContent>
       </Dialog>
