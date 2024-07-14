@@ -7,7 +7,7 @@ export const theme = (mode: 'dark' | 'light') => {
       primary: teal,
       mode: mode,
       secondary: {
-        main: '#009688', // セカンダリカラーの変更
+        main: '#009688',
       }
     },
   });
