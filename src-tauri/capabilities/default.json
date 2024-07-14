@@ -13,8 +13,6 @@
     "menu:default",
     "tray:default",
     "shell:allow-open",
-    "store:default",
-    "dialog:allow-save",
-    "fs:allow-app-write"
+    "store:default"
   ]
 }

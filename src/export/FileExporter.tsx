@@ -1,16 +1,11 @@
-import { useState } from "react";
-
-import { Button, Stack } from "@mui/material";
+import {Button, Stack } from "@mui/material";
 import { Service } from "../services/Service";
 import { TauriService } from "../services/TauriService";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
-import { save } from '@tauri-apps/plugin-dialog'
-
+import { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import { Parser } from '@json2csv/plainjs';
-import { writeTextFile } from "@tauri-apps/plugin-fs";
 
 export type ExportType = 'json' | 'csv';
 
@@ -51,21 +46,15 @@ const FileExporter: React.FC<FileExporterProps> = ({ exportType, service = new T
         }
       }
 
-      const savePath = await save({
-        title: '作業記録保存',
-        defaultPath: './worklog.json',
-        filters: [
-          {
-            name: 'json',
-            extensions: [exportType],
-          }
-        ]
-      });
+      // Blob を作成
+      const blob = new Blob([data], { type: 'text/plain' });
 
-      if (savePath) {
-        writeTextFile(savePath, data);
-      }
-
+      // ダミーの a タグを作って Blob の URL を設定し、クリックをエミュレート
+      const link = document.createElement('a');
+      link.download = `作業記録.${exportType}`;
+      link.href = URL.createObjectURL(blob);
+      link.click();
+      URL.revokeObjectURL(link.href);
     }
   }
 

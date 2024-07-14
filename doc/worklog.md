@@ -211,12 +211,3 @@ npm i -D vite-plugin-string
 npm run tauri add window-state
 ```
 
-## ファイル保存のためにプラグイン導入
-
-```sh
-npm add @tauri-apps/plugin-dialog
-cargo add tauri-plugin-dialog@2.0.0-beta
-npm add @tauri-apps/plugin-fs
-cargo add tauri-plugin-fs@2.0.0-beta
-```
-
