@@ -211,3 +211,9 @@ npm i -D vite-plugin-string
 npm run tauri add window-state
 ```
 
+
+```sh
+npm i react-hot-toast
+cargo add tauri-plugin-os@2.0.0-beta
+npm add @tauri-apps/plugin-os
+```

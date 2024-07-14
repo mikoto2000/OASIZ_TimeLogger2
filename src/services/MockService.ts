@@ -2,6 +2,10 @@ import { DisplayMode } from "../Types";
 import { CreateLog, Service, UpdateLog, WorkLog } from "./Service";
 
 export const mockService_0: Service = {
+  getPlatform: function() {
+    return 'linux';
+  },
+
   saveDisplayMode: async function(_: DisplayMode) {
   },
 
@@ -33,6 +37,10 @@ export const mockService_0: Service = {
 };
 
 export const mockService_3: Service = {
+  getPlatform: function() {
+    return 'linux';
+  },
+
   saveDisplayMode: async function(_: DisplayMode) {
   },
   getDisplayMode: async function(): Promise<DisplayMode> {

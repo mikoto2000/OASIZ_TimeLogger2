@@ -31,12 +31,15 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
 
   const [showNoticeDialog, setShowNoticeDialog] = useState<boolean>(false);
 
+  const [platform, setPlatform] = useState<string | null>(null);
+
   const menuIcon = useRef(null);
 
   useEffect(() => {
     (async () => {
       const mode = await service.getDisplayMode();
       setCurrentDisplayMode(mode);
+      setPlatform(service.getPlatform());
     })();
   }, []);
 
@@ -89,21 +92,29 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
           open={showMenu}
           onClose={() => setShowMenu(false)}
         >
-          <MenuItem
-          >作業記録エクスポート</MenuItem>
-          <MenuItem>
-            <ButtonGroup>
-              <Button onClick={() => {
-                setExportType('csv')
-                setShowExportDialog(true)
-              }}>CSV</Button>
-              <Button onClick={() => {
-                setExportType('json')
-                setShowExportDialog(true)
-              }}>JSON</Button>
-            </ButtonGroup>
-          </MenuItem>
-          <Divider />
+          {
+            (platform !== 'android' && platform !== 'ios' && platform != null)
+              ?
+              <>
+                <MenuItem
+                >作業記録エクスポート</MenuItem>
+                <MenuItem>
+                  <ButtonGroup>
+                    <Button onClick={() => {
+                      setExportType('csv')
+                      setShowExportDialog(true)
+                    }}>CSV</Button>
+                    <Button onClick={() => {
+                      setExportType('json')
+                      setShowExportDialog(true)
+                    }}>JSON</Button>
+                  </ButtonGroup>
+                </MenuItem>
+                <Divider />
+              </>
+              :
+              <></>
+          }
           <MenuItem
           >ライトモード・ダークモード切替
           </MenuItem>
@@ -149,7 +160,7 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
         open={showNoticeDialog}
         onClose={() => { setShowNoticeDialog(false) }} >
         <DialogContent>
-          <pre style={{ fontSize:"0.75em"}}>
+          <pre style={{ fontSize: "0.75em" }}>
             {(notice as any)}
           </pre>
         </DialogContent>

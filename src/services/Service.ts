@@ -19,6 +19,8 @@ export interface UpdateLog {
 }
 
 export interface Service {
+  // os
+  getPlatform(): string;
   // Setting
   saveDisplayMode(mode: DisplayMode): Promise<void>;
   getDisplayMode(): Promise<DisplayMode>;

@@ -44,6 +44,7 @@ pub fn run() {
             update_end_date_command,
             delete_work_log_command,
         ])
+        .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_store::Builder::default().build());
 
     #[cfg(not(mobile))]
