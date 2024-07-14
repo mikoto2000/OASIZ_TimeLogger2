@@ -45,6 +45,7 @@ pub fn run() {
             delete_work_log_command,
         ])
         .plugin(tauri_plugin_store::Builder::default().build())
+        .plugin(tauri_plugin_window_state::Builder::default().build())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

@@ -205,3 +205,9 @@ npm i @json2csv/plainjs
 npm i -D vite-plugin-string
 ```
 
+## ウィンドウ状態保存のためにプラグイン導入
+
+```sh
+npm run tauri add window-state
+```
+
