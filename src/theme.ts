@@ -1,14 +1,18 @@
-import { teal } from '@mui/material/colors';
 import { createTheme } from '@mui/material/styles';
 
 export const theme = (mode: 'dark' | 'light') => {
-  return createTheme({
+  const defaultLightTheme = createTheme();
+  const defaultDarkTheme = createTheme({
     palette: {
-      primary: teal,
+      mode: 'dark'
+    }
+  });
+
+  return createTheme({
+    ...(mode === 'light' ? defaultLightTheme : defaultDarkTheme),
+    palette: {
+      ...(mode === 'light' ? defaultLightTheme.palette : defaultDarkTheme.palette),
       mode: mode,
-      secondary: {
-        main: '#009688',
-      }
     },
   });
 }
