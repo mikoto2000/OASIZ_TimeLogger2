@@ -1,5 +1,5 @@
 {
-  "productName": "作業記録",
+  "productName": "OASIZ_TimeLogger2",
   "version": "0.0.1",
   "identifier": "dev.mikoto2000.oasiztimelogger2",
   "build": {
@@ -11,7 +11,7 @@
   "app": {
     "windows": [
       {
-        "title": "作業記録",
+        "title": "OASIZ_TimeLogger2",
         "width": 800,
         "height": 600
       }
