@@ -3,6 +3,8 @@
 時間記録支援アプリケーション。
 ([mikoto2000/OASIZ_TimeLogger: 時間記録支援アプリケーション](https://github.com/mikoto2000/OASIZ_TimeLogger/tree/master) の再実装)
 
+![ss1](https://github.com/user-attachments/assets/a94d8935-408a-4d56-8ab1-ef2833eaf645)
+![ss2](https://github.com/user-attachments/assets/e876ad78-720a-448f-a873-4c3598292f7b)
 
 # Features:
 
