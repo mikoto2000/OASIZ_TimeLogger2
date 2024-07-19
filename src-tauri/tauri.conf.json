@@ -11,7 +11,7 @@
   "app": {
     "windows": [
       {
-        "title": "OASIZ_TimeLogger2",
+        "title": "OASIZ 作業記録2",
         "width": 800,
         "height": 600
       }
@@ -29,6 +29,9 @@
       "icons/128x128@2x.png",
       "icons/icon.icns",
       "icons/icon.ico"
-    ]
+    ],
+    "android": {
+      "versionCode": 2
+    }
   }
 }

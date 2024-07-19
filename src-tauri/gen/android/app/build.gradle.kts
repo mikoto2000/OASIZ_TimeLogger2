@@ -43,9 +43,6 @@ android {
                     .plus(getDefaultProguardFile("proguard-android-optimize.txt"))
                     .toList().toTypedArray()
             )
-            ndk {
-              debugSymbolLevel = "FULL"
-            }
         }
     }
     kotlinOptions {
