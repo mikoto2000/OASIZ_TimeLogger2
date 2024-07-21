@@ -26,6 +26,7 @@ diesel_migrations = { version = "2.2.0", features = ["sqlite"] }
 libsqlite3-sys = { version = "0.28.0", features = ["bundled"] }
 tauri-plugin-store = "2.0.0-beta"
 tauri-plugin-os = "2.0.0-beta"
+tauri-plugin-android-intent-send = { path = "../tauri-plugin-android-intent-send" }
 
 [target."cfg(not(any(target_os = \"android\", target_os = \"ios\")))".dependencies]
 tauri-plugin-window-state = "2.0.0-beta"

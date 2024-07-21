@@ -58,6 +58,7 @@ pub fn run() {
     #[cfg(mobile)]
     {
         builder
+            .plugin(tauri_plugin_android_intent_send::init())
             .run(tauri::generate_context!())
             .expect("error while running tauri application");
     }
