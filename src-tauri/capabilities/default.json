@@ -13,6 +13,7 @@
     "menu:default",
     "tray:default",
     "shell:allow-open",
-    "store:default"
+    "store:default",
+    "android-intent-send:allow-ping"
   ]
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Box, Button, Link, Stack } from "@mui/material";
 import { Service } from "../services/Service";
@@ -9,6 +9,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs, { Dayjs } from "dayjs";
 import { Parser } from '@json2csv/plainjs';
 import toast, { Toaster } from "react-hot-toast";
+
+import { ping } from "tauri-plugin-android-intent-send-api";
 
 export type ExportType = 'json' | 'csv';
 
@@ -23,6 +25,14 @@ const FileExporter: React.FC<FileExporterProps> = ({ exportType, service = new T
   const [toDate, setToDate] = useState<Dayjs | null>(dayjs());
 
   const [dataBlobUrl, setDataBlobUrl] = useState<string | null>(null);
+
+  const [platform, setPlatform] = useState<string | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      setPlatform(service.getPlatform());
+    })();
+  }, []);
 
   const exportWorkLog = async () => {
     if (fromDate && toDate) {
@@ -63,11 +73,14 @@ const FileExporter: React.FC<FileExporterProps> = ({ exportType, service = new T
       //} catch (err) {
       //  console.log(err);
       //}
-      console.log(data);
-      const blob = new Blob([data], { type: 'text/plain' });
-      const blobUrl = URL.createObjectURL(blob);
-      setDataBlobUrl(blobUrl);
 
+      if (platform !== 'android' && platform !== 'ios' && platform != null) {
+        const blob = new Blob([data], { type: 'text/plain' });
+        const blobUrl = URL.createObjectURL(blob);
+        setDataBlobUrl(blobUrl);
+      } else {
+        ping(data);
+      }
     }
   }
 
