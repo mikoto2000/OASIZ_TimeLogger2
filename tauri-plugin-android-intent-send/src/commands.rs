@@ -5,9 +5,9 @@ use crate::Result;
 use crate::AndroidIntentSendExt;
 
 #[command]
-pub(crate) async fn ping<R: Runtime>(
+pub(crate) async fn send_intent<R: Runtime>(
     app: AppHandle<R>,
     payload: PingRequest,
 ) -> Result<PingResponse> {
-    app.android_intent_send().ping(payload)
+    app.android_intent_send().send_intent(payload)
 }

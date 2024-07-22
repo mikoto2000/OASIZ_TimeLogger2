@@ -2,7 +2,7 @@
 
 Default permissions for the plugin
 
-- `allow-ping`
+- `allow-send-intent`
 
 ### Permission Table 
 
@@ -16,12 +16,12 @@ Default permissions for the plugin
 <tr>
 <td>
 
-`android-intent-send:allow-ping`
+`android-intent-send:allow-send-intent`
 
 </td>
 <td>
 
-Enables the ping command without any pre-configured scope.
+Enables the send_intent command without any pre-configured scope.
 
 </td>
 </tr>
@@ -29,12 +29,12 @@ Enables the ping command without any pre-configured scope.
 <tr>
 <td>
 
-`android-intent-send:deny-ping`
+`android-intent-send:deny-send-intent`
 
 </td>
 <td>
 
-Denies the ping command without any pre-configured scope.
+Denies the send_intent command without any pre-configured scope.
 
 </td>
 </tr>

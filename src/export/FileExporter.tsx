@@ -10,7 +10,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { Parser } from '@json2csv/plainjs';
 import toast, { Toaster } from "react-hot-toast";
 
-import { ping } from "tauri-plugin-android-intent-send-api";
+import { sendIntent } from "tauri-plugin-android-intent-send-api";
 
 export type ExportType = 'json' | 'csv';
 
@@ -79,7 +79,7 @@ const FileExporter: React.FC<FileExporterProps> = ({ exportType, service = new T
         const blobUrl = URL.createObjectURL(blob);
         setDataBlobUrl(blobUrl);
       } else {
-        ping(data);
+        sendIntent(data);
       }
     }
   }

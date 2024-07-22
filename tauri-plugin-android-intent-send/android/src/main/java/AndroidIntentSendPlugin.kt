@@ -18,7 +18,7 @@ class PingArgs {
 class AndroidIntentSendPlugin(private val activity: Activity): Plugin(activity) {
 
     @Command
-    fun ping(invoke: Invoke) {
+    fun send_intent(invoke: Invoke) {
         val args = invoke.parseArgs(PingArgs::class.java)
 
         val intent = Intent(Intent.ACTION_SEND, null);
