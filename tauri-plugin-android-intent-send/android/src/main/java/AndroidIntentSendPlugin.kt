@@ -15,7 +15,7 @@ class PingArgs {
 }
 
 @TauriPlugin
-class ExamplePlugin(private val activity: Activity): Plugin(activity) {
+class AndroidIntentSendPlugin(private val activity: Activity): Plugin(activity) {
 
     @Command
     fun ping(invoke: Invoke) {

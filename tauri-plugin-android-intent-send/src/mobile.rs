@@ -18,7 +18,7 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
   api: PluginApi<R, C>,
 ) -> crate::Result<AndroidIntentSend<R>> {
   #[cfg(target_os = "android")]
-  let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "ExamplePlugin")?;
+  let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "AndroidIntentSendPlugin")?;
   #[cfg(target_os = "ios")]
   let handle = api.register_ios_plugin(init_plugin_android-intent-send)?;
   Ok(AndroidIntentSend(handle))

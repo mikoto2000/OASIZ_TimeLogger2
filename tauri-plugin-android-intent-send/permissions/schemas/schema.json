@@ -309,20 +309,6 @@
           ]
         },
         {
-          "description": "allow-send-intent -> Enables the send_intent command without any pre-configured scope.",
-          "type": "string",
-          "enum": [
-            "allow-send-intent"
-          ]
-        },
-        {
-          "description": "deny-send-intent -> Denies the send_intent command without any pre-configured scope.",
-          "type": "string",
-          "enum": [
-            "deny-send-intent"
-          ]
-        },
-        {
           "description": "default -> Default permissions for the plugin",
           "type": "string",
           "enum": [
