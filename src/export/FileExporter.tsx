@@ -79,7 +79,7 @@ const FileExporter: React.FC<FileExporterProps> = ({ exportType, service = new T
         const blobUrl = URL.createObjectURL(blob);
         setDataBlobUrl(blobUrl);
       } else {
-        sendIntent(data);
+        sendIntent(`worklog.${exportType}`, data);
       }
     }
   }
