@@ -28,7 +28,7 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
 pub struct AndroidIntentSend<R: Runtime>(PluginHandle<R>);
 
 impl<R: Runtime> AndroidIntentSend<R> {
-  pub fn send_intent(&self, payload: PingRequest) -> crate::Result<PingResponse> {
+  pub fn send_intent(&self, payload: SendIntentRequest) -> crate::Result<SendIntentResponse> {
     self
       .0
       .run_mobile_plugin("send_intent", payload)
