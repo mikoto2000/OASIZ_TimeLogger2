@@ -18,7 +18,7 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
   api: PluginApi<R, C>,
 ) -> crate::Result<AndroidIntentSend<R>> {
   #[cfg(target_os = "android")]
-  let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "ExamplePlugin")?;
+  let handle = api.register_android_plugin(PLUGIN_IDENTIFIER, "AndroidIntentSendPlugin")?;
   #[cfg(target_os = "ios")]
   let handle = api.register_ios_plugin(init_plugin_android-intent-send)?;
   Ok(AndroidIntentSend(handle))
@@ -28,10 +28,10 @@ pub fn init<R: Runtime, C: DeserializeOwned>(
 pub struct AndroidIntentSend<R: Runtime>(PluginHandle<R>);
 
 impl<R: Runtime> AndroidIntentSend<R> {
-  pub fn ping(&self, payload: PingRequest) -> crate::Result<PingResponse> {
+  pub fn send_intent(&self, payload: SendIntentRequest) -> crate::Result<SendIntentResponse> {
     self
       .0
-      .run_mobile_plugin("ping", payload)
+      .run_mobile_plugin("send_intent", payload)
       .map_err(Into::into)
   }
 }

@@ -35,7 +35,7 @@ impl<R: Runtime, T: Manager<R>> crate::AndroidIntentSendExt<R> for T {
 /// Initializes the plugin.
 pub fn init<R: Runtime>() -> TauriPlugin<R> {
   Builder::new("android-intent-send")
-    .invoke_handler(tauri::generate_handler![commands::ping])
+    .invoke_handler(tauri::generate_handler![commands::send_intent])
     .setup(|app, api| {
       #[cfg(mobile)]
       let android_intent_send = mobile::init(app, api)?;

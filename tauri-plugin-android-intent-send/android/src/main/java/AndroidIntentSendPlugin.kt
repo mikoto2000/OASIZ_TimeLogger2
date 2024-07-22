@@ -11,20 +11,21 @@ import app.tauri.plugin.Invoke
 
 @InvokeArg
 class PingArgs {
-  var value: String? = null
+  var subject: String = ""
+  var text: String = ""
 }
 
 @TauriPlugin
-class ExamplePlugin(private val activity: Activity): Plugin(activity) {
+class AndroidIntentSendPlugin(private val activity: Activity): Plugin(activity) {
 
     @Command
-    fun ping(invoke: Invoke) {
+    fun send_intent(invoke: Invoke) {
         val args = invoke.parseArgs(PingArgs::class.java)
 
         val intent = Intent(Intent.ACTION_SEND, null);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_SUBJECT, "作業記録");
-        intent.putExtra(Intent.EXTRA_TEXT, args.value);
+        intent.putExtra(Intent.EXTRA_SUBJECT, args.subject);
+        intent.putExtra(Intent.EXTRA_TEXT, args.text);
         activity.startActivity(Intent.createChooser(intent, "送信するアクティビティを選択"));
 
 
