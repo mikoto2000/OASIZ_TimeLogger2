@@ -1,6 +1,6 @@
 [package]
 name = "oasiz_timelogger"
-version = "0.0.0"
+version = "0.0.2"
 description = "時間記録支援アプリケーション"
 authors = ["mikoto2000"]
 edition = "2021"
