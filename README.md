@@ -20,11 +20,6 @@
     - [x] : JSON
 
 
-# Limitation:
-
-Android 版ではエクスポート機能が使えません
-
-
 # License:
 
 Copyright (C) 2024 mikoto2000
