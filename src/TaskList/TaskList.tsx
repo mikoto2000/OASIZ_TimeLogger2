@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { List, Divider, Typography, Button, Grid, Select } from '@mui/material';
+import { List, Divider, Typography, Button, Grid, Select, Box } from '@mui/material';
 import { Service, WorkLog } from '../services/Service';
 import { TauriService } from '../services/TauriService';
 import TaskListItem from '../commons/TaskListItem';
@@ -101,7 +101,39 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
     return isIncludeStart || isIncludeEnd;
   }
 
-  const list = (logs: WorkLog[]) => {
+  const logList = (logs: WorkLog[], targetHour: number) => {
+    const filterdLogs = logs
+      .filter((log) => isIncludeWorkHour(log.startDate, log.endDate, targetHour));
+
+    if (filterdLogs.length === 0) {
+      return <Divider />
+    }
+
+    return (
+      logs
+        .filter((log) => isIncludeWorkHour(log.startDate, log.endDate, targetHour))
+        .map((log, index) => (
+          <>
+            <Divider />
+            <Grid container>
+              <Grid xs={12} key={index}>
+                <TaskListItem
+                  workNo={log.workNo}
+                  workName={log.workName}
+                  startDate={log.startDate}
+                  endDate={log.endDate}
+                  onItemClicked={() => handleEdit(log)}
+                  onDeleteClicked={() => handleDelete(log)}
+                />
+              </Grid>
+            </Grid>
+          </>
+        ))
+
+    );
+  }
+
+  const grid = (logs: WorkLog[]) => {
     if (logs.length === 0) {
       return <p>ログデータがありません。</p>
     }
@@ -115,34 +147,19 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
           {
             [...range(0, 24)].map((e) => (
               <>
-                <Grid xs={1}>{e}</Grid>
+                <Grid xs={1} sx={{}}>
+                  <Divider />
+                  <Box sx={{ width: "100%", height: "100%", textAlign: "center", verticalAlign: "middle" }}>
+                    {e}
+                  </Box>
+                </Grid >
+                <Divider orientation="vertical" flexItem sx={{ marginLeft: "-1px" }} />
                 <Grid xs={9}>
-                  {
-                    logs
-                      .filter((log) => isIncludeWorkHour(log.startDate, log.endDate, e))
-                      .map((log, index) => (
-                        <>
-                          <Grid container>
-                            <Grid xs={12} key={index}>
-                              <TaskListItem
-                                workNo={log.workNo}
-                                workName={log.workName}
-                                startDate={log.startDate}
-                                endDate={log.endDate}
-                                onItemClicked={() => handleEdit(log)}
-                                onDeleteClicked={() => handleDelete(log)}
-                              />
-                              {index < logs.length - 1 && <Divider />}
-                            </Grid>
-                          </Grid>
-                          <Divider />
-                        </>
-                      ))
-                  }
+                  {logList(logs, e)}
                 </Grid>
                 <Grid xs={2}>
                   <Select
-                    style={{ width: `calc(100% - ${scrollbarWidth}px)` }}
+                    style={{ width: `calc(100% - ${scrollbarWidth}px)`, height: "100%" }}
                     value={productivityScore[e]}
                     onChange={(event) => {
                       productivityScore[e] = event.target.value as number;
@@ -162,7 +179,7 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
             ))
           }
         </Grid>
-      </List>
+      </List >
     );
   }
 
@@ -175,7 +192,7 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
         <div>{errorMessage}</div>
       </div>
       <div style={{ flexGrow: '1', overflowY: 'auto' }}>
-        {list(logs)}
+        {grid(logs)}
       </div>
       <div style={{ flexGrow: '0' }}>
         <div style={{ display: 'flex' }}>
