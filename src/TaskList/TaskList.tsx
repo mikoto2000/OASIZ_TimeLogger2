@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { List, Divider, Typography, Button } from '@mui/material';
+import { List, Divider, Typography, Button, Grid, Select } from '@mui/material';
 import { Service, WorkLog } from '../services/Service';
 import { TauriService } from '../services/TauriService';
 import TaskListItem from '../commons/TaskListItem';
 import WorkLogEditDialog from './WorkLogEditDialog';
+import MenuItem from '@mui/material/MenuItem';
+import dayjs, { Dayjs } from 'dayjs';
 
 interface TaskListProps {
   service?: Service;
 }
+
+const scrollbarWidth = window.innerWidth - document.body.clientWidth;
 
 const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -19,12 +23,17 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
   const [errorMessage, setErrorMessage] = useState("");
   const [editTask, setEditTask] = useState<WorkLog | null>(null);
 
+  const [productivityScore, setProductivityScore] = useState<Array<number>>([]);
+
   let isInitialized = false;
+
+  const targetDay = dayjs(selectedDate).startOf('day');
 
   useEffect(() => {
     if (!isInitialized) {
       const now = new Date();
       fetchWorkLog(now.getFullYear(), now.getMonth() + 1, now.getDate());
+      fetchProductivityScore(now.getFullYear(), now.getMonth() + 1, now.getDate());
     }
     isInitialized = true;
   }, []);
@@ -43,6 +52,11 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
         setLogs(newLogs);
       })
       .catch((e: any) => setErrorMessage(e.message));
+  }
+
+  const fetchProductivityScore = (_year: number, _month: number, _day: number) => {
+    // TODO: バックエンドにつなげる
+    setProductivityScore([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
   }
 
   const handlePrevDay = () => {
@@ -71,26 +85,83 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
     setLogs([...newLogs]);
   };
 
+  const isIncludeWorkHour = (workStartISOString: string, workEndISOString: string | null | undefined, hour: number) => {
+    const workStart = dayjs(workStartISOString);
+    let workEnd: Dayjs;
+    if (!workEndISOString) {
+      workEnd = dayjs(workEndISOString);
+    } else {
+      workEnd = workStart;
+    }
+    const targetTimeStart = targetDay.add(hour, 'h');
+    const targetTimeEnd = targetDay.add(hour + 1, 'h');
+    const isIncludeStart = workStart.isAfter(targetTimeStart) && workStart.isBefore(targetTimeEnd);
+    const isIncludeEnd = workEnd.isAfter(targetTimeStart) && workEnd.isBefore(targetTimeEnd);
+
+    return isIncludeStart || isIncludeEnd;
+  }
+
   const list = (logs: WorkLog[]) => {
     if (logs.length === 0) {
       return <p>ログデータがありません。</p>
     }
 
     return (
-      <List>
-        {logs.map((log, index) => (
-          <div key={index}>
-            <TaskListItem
-              workNo={log.workNo}
-              workName={log.workName}
-              startDate={log.startDate}
-              endDate={log.endDate}
-              onItemClicked={() => handleEdit(log)}
-              onDeleteClicked={() => handleDelete(log)}
-            />
-            {index < logs.length - 1 && <Divider />}
-          </div>
-        ))}
+      <List style={{}}>
+        <Grid container>
+          <Grid xs={1}>時間</Grid>
+          <Grid xs={9}>作業</Grid>
+          <Grid xs={2}>生産性スコア</Grid>
+          {
+            [...range(0, 24)].map((e) => (
+              <>
+                <Grid xs={1}>{e}</Grid>
+                <Grid xs={9}>
+                  {
+                    logs
+                      .filter((log) => isIncludeWorkHour(log.startDate, log.endDate, e))
+                      .map((log, index) => (
+                        <>
+                          <Grid container>
+                            <Grid xs={12} key={index}>
+                              <TaskListItem
+                                workNo={log.workNo}
+                                workName={log.workName}
+                                startDate={log.startDate}
+                                endDate={log.endDate}
+                                onItemClicked={() => handleEdit(log)}
+                                onDeleteClicked={() => handleDelete(log)}
+                              />
+                              {index < logs.length - 1 && <Divider />}
+                            </Grid>
+                          </Grid>
+                          <Divider />
+                        </>
+                      ))
+                  }
+                </Grid>
+                <Grid xs={2}>
+                  <Select
+                    style={{ width: `calc(100% - ${scrollbarWidth}px)` }}
+                    value={productivityScore[e]}
+                    onChange={(event) => {
+                      productivityScore[e] = event.target.value as number;
+                      setProductivityScore([...productivityScore]);
+                    }}
+                  >
+                    <MenuItem value={0}>0</MenuItem>
+                    <MenuItem value={1}>1</MenuItem>
+                    <MenuItem value={2}>2</MenuItem>
+                    <MenuItem value={3}>3</MenuItem>
+                    <MenuItem value={4}>4</MenuItem>
+                    <MenuItem value={5}>5</MenuItem>
+                    <MenuItem value={6}>6</MenuItem>
+                  </Select>
+                </Grid>
+              </>
+            ))
+          }
+        </Grid>
       </List>
     );
   }
@@ -99,7 +170,7 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
     <div style={{ height: 'calc(100vh - 5.5em)', display: 'flex', flexDirection: 'column' }}>
       <div style={{ flexGrow: '0' }}>
         <Typography variant="h6">
-          {selectedDate.toLocaleDateString()}の作業一覧
+          {selectedDate.toLocaleDateString()}の作業一覧, 生産性スコア合計: {productivityScore.reduce((sum, current) => sum + current, 0)}
         </Typography>
         <div>{errorMessage}</div>
       </div>
@@ -138,6 +209,12 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
       ></WorkLogEditDialog>
     </div>
   );
+
+  function* range(start: number, end: number) {
+    for (let i = start; i < end; i++) {
+      yield i;
+    }
+  }
 };
 
 export default TaskList;

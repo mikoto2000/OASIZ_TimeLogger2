@@ -6,9 +6,6 @@
     "WAYLAND_DISPLAY": "${localEnv:WAYLAND_DISPLAY}",
     "XDG_RUNTIME_DIR": "${localEnv:XDG_RUNTIME_DIR}"
   },
-  "forwardPorts": [
-    "0.0.0.0:6006:6006"
-  ],
   "mounts": [
     {
       "type": "bind",
