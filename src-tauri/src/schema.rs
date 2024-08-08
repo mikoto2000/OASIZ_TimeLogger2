@@ -2,7 +2,7 @@
 
 diesel::table! {
     productivity_score (date) {
-        date -> Text,
+        date -> Timestamp,
         score0 -> Integer,
         score1 -> Integer,
         score2 -> Integer,

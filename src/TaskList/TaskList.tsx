@@ -25,18 +25,12 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
 
   const [productivityScore, setProductivityScore] = useState<Array<number>>([]);
 
-  let isInitialized = false;
-
   const targetDay = dayjs(selectedDate).startOf('day');
 
   useEffect(() => {
-    if (!isInitialized) {
-      const now = new Date();
-      fetchWorkLog(now.getFullYear(), now.getMonth() + 1, now.getDate());
-      fetchProductivityScore(now.getFullYear(), now.getMonth() + 1, now.getDate());
-    }
-    isInitialized = true;
-  }, []);
+    fetchWorkLog(selectedDate.getFullYear(), selectedDate.getMonth() + 1, selectedDate.getDate());
+    fetchProductivityScore(selectedDate.getFullYear(), selectedDate.getMonth() + 1, selectedDate.getDate());
+  }, [selectedDate]);
 
   const fetchWorkLog = (year: number, month: number, day: number) => {
     service.getWorkLogsByDate(year, month, day)
@@ -54,9 +48,8 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
       .catch((e: any) => setErrorMessage(e.message));
   }
 
-  const fetchProductivityScore = (_year: number, _month: number, _day: number) => {
-    // TODO: バックエンドにつなげる
-    setProductivityScore([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const fetchProductivityScore = async (year: number, month: number, day: number) => {
+    setProductivityScore(await service.getProductivityScoreByDate(year, month, day));
   }
 
   const handlePrevDay = () => {

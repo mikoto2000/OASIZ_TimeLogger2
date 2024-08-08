@@ -5,7 +5,6 @@ import { DisplayMode } from '../Types.ts';
 import { Store } from '@tauri-apps/plugin-store';
 
 export class TauriService implements Service {
-
   private store = new Store("settings.dat");
 
   getPlatform() {
@@ -65,6 +64,10 @@ export class TauriService implements Service {
 
   async deleteWorkLog(workNo: number): Promise<void> {
     await invoke('delete_work_log_command', { workNo: workNo });
+  }
+
+  async getProductivityScoreByDate(year: number, month: number, day: number): Promise<number[]> {
+    return await invoke('get_productivity_score_by_date_command', { year, month, day });
   }
 }
 

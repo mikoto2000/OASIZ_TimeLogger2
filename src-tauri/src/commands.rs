@@ -9,9 +9,9 @@ use tauri::State;
 
 use crate::{
     database::{
-        create_work_log, delete_work_log, get_all_work_logs, get_recent_work_logs, get_work_logs, get_work_logs_by_date, update_end_date, update_work_name
+        create_work_log, delete_work_log, get_all_work_logs, get_productivity_score_by_date, get_recent_work_logs, get_work_logs, get_work_logs_by_date, update_end_date, update_work_name
     },
-    models::WorkLog,
+    models::{ProductivityScores, WorkLog},
     AppState,
 };
 
@@ -135,6 +135,21 @@ pub fn get_work_logs_by_date_command(
     let conn = state.conn.clone();
 
     let results = get_work_logs_by_date(&conn, year, month, day);
+
+    Ok(results)
+}
+
+#[tauri::command]
+pub fn get_productivity_score_by_date_command(
+    state: State<'_, AppState>,
+    year: i32,
+    month: u32,
+    day: u32,
+) -> Result<Vec<i32>, String> {
+    let state = state.clone();
+    let conn = state.conn.clone();
+
+    let results = get_productivity_score_by_date(&conn, year, month, day);
 
     Ok(results)
 }

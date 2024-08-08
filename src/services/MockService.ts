@@ -33,6 +33,9 @@ export const mockService_0: Service = {
   updateEndDate: async function(_log: UpdateLog): Promise<void> {
   },
   deleteWorkLog: async function(_workNo: number): Promise<void> {
+  },
+  getProductivityScoreByDate: async function(_year: number, _month: number, _day: number): Promise<number[]> {
+    return [0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2];
   }
 };
 
@@ -117,6 +120,9 @@ export const mockService_3: Service = {
   updateEndDate: async function(_log: UpdateLog): Promise<void> {
   },
   deleteWorkLog: async function(_workNo: number): Promise<void> {
+  },
+  getProductivityScoreByDate: async function(_year: number, _month: number, _day: number): Promise<number[]> {
+    return [0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2, 3, 4, 5, 6, 0, 1, 2];
   }
 };
 
