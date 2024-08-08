@@ -9,9 +9,9 @@ use tauri::State;
 
 use crate::{
     database::{
-        create_work_log, delete_work_log, get_all_work_logs, get_productivity_score_by_date, get_recent_work_logs, get_work_logs, get_work_logs_by_date, update_end_date, update_work_name
+        create_work_log, delete_work_log, get_all_work_logs, get_productivity_score_by_date, get_recent_work_logs, get_work_logs, get_work_logs_by_date, update_end_date, update_productivity_score_by_date, update_work_name
     },
-    models::{ProductivityScores, WorkLog},
+    models::WorkLog,
     AppState,
 };
 
@@ -146,6 +146,7 @@ pub fn get_productivity_score_by_date_command(
     month: u32,
     day: u32,
 ) -> Result<Vec<i32>, String> {
+    println!("get_productivity_score_by_date_command");
     let state = state.clone();
     let conn = state.conn.clone();
 
@@ -153,3 +154,48 @@ pub fn get_productivity_score_by_date_command(
 
     Ok(results)
 }
+
+#[tauri::command]
+pub fn update_productivity_score_by_date_command(
+    state: State<'_, AppState>,
+    year: i32,
+    month: u32,
+    day: u32,
+    productivity_score: Vec<i32>,
+) -> Result<(), String> {
+    println!("update_productivity_score_by_date_command");
+    let state = state.clone();
+    let conn = state.conn.clone();
+
+    update_productivity_score_by_date(
+        &conn,
+        year, month, day,
+        productivity_score[0],
+        productivity_score[1],
+        productivity_score[2],
+        productivity_score[3],
+        productivity_score[4],
+        productivity_score[5],
+        productivity_score[6],
+        productivity_score[7],
+        productivity_score[8],
+        productivity_score[9],
+        productivity_score[10],
+        productivity_score[11],
+        productivity_score[12],
+        productivity_score[13],
+        productivity_score[14],
+        productivity_score[15],
+        productivity_score[16],
+        productivity_score[17],
+        productivity_score[18],
+        productivity_score[19],
+        productivity_score[20],
+        productivity_score[21],
+        productivity_score[22],
+        productivity_score[23],
+        );
+
+    Ok(())
+}
+

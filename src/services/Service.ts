@@ -40,5 +40,6 @@ export interface Service {
   updateEndDate(log: UpdateLog): Promise<void>;
   deleteWorkLog(workNo: number): Promise<void>;
   getProductivityScoreByDate(year: number, month: number, day: number): Promise<number[]>;
+  updateProductivityScoreByDate(date: Date, productivityScore: number[]): Promise<void>;
 }
 

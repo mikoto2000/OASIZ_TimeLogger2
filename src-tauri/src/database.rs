@@ -1,11 +1,13 @@
-use chrono::{DateTime, Duration, Local, TimeZone};
+use chrono::{DateTime, Duration, Local, TimeZone, Utc};
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use dotenv::dotenv;
 use std::env;
 use std::sync::{Arc, Mutex};
 
-use crate::models::{NewWorkLog, ProductivityScores, UpdateWorkLog, WorkLog};
+use crate::models::{
+    NewWorkLog, ProductivityScores, UpdateProductivityScores, UpdateWorkLog, WorkLog,
+};
 use crate::schema::work_log::dsl::work_log;
 
 pub fn establish_connection(default_database_url: String) -> SqliteConnection {
@@ -254,4 +256,33 @@ pub fn create_productivity_score_by_date(
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     ]
     .to_vec();
+}
+
+pub fn update_productivity_score_by_date(
+    conn: &Arc<Mutex<SqliteConnection>>,
+    year: i32,
+    month: u32,
+    day: u32,
+    s0: i32, s1: i32, s2: i32, s3: i32, s4: i32, s5: i32,
+    s6: i32, s7: i32, s8: i32, s9: i32, s10: i32, s11: i32,
+    s12: i32, s13: i32, s14: i32, s15: i32, s16: i32, s17: i32,
+    s18: i32, s19: i32, s20: i32, s21: i32, s22: i32, s23: i32,
+) -> usize {
+    let updated_productivity_scores = UpdateProductivityScores {
+        score0: s0, score1: s1, score2: s2, score3: s3, score4: s4, score5: s5,
+        score6: s6, score7: s7, score8: s8, score9: s9, score10: s10, score11: s11,
+        score12: s12, score13: s13, score14: s14, score15: s15, score16: s16, score17: s17,
+        score18: s18, score19: s19, score20: s20, score21: s21, score22: s22, score23: s23,
+    };
+
+    let mut conn = conn.lock().unwrap();
+
+    let datetime = Utc.with_ymd_and_hms(year, month, day, 0, 0, 0).unwrap();
+
+    use crate::schema::productivity_score::dsl::*;
+
+    diesel::update(productivity_score.find(datetime.to_rfc3339()))
+        .set(&updated_productivity_scores)
+        .execute(&mut *conn)
+        .expect("Error updating work log")
 }
