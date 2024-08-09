@@ -70,6 +70,13 @@ export class TauriService implements Service {
     return await invoke('get_productivity_score_by_date_command', { year, month, day });
   }
 
+  async getProductivityScores(fromYear: number, fromMonth: number, fromDay: number, toYear: number, toMonth: number, toDay: number): Promise<number[][]> {
+    return await invoke('get_productivity_scores_command', {
+      fromYear, fromMonth, fromDay,
+      toYear, toMonth, toDay,
+    });
+  }
+
   async updateProductivityScoreByDate(date: Date, productivityScore: number[]): Promise<void> {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;

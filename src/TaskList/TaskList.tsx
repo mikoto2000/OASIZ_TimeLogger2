@@ -158,9 +158,6 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
                       productivityScore[e] = event.target.value as number;
                       setProductivityScore([...productivityScore]);
                       setTimeout(() => {
-                        console.log("KITAYO");
-                        console.log(selectedDate);
-                        console.log(productivityScore);
                         service.updateProductivityScoreByDate(selectedDate, productivityScore);
                       });
                     }}

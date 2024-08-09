@@ -10,6 +10,7 @@ import { Service } from './services/Service';
 import { TauriService } from './services/TauriService';
 import { DisplayMode } from './Types';
 import FileExporter, { ExportType } from './export/FileExporter';
+import ProductivityScoreExporter from './export/ProductivityScoreExporter';
 
 import notice from "../NOTICE.md";
 
@@ -139,10 +140,10 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
         open={showExportDialog}
         onClose={() => { setShowExportDialog(false) }} >
         <DialogContent>
-          <FileExporter
+          <ProductivityScoreExporter
             exportType={exportType}
             service={service}>
-          </FileExporter>
+          </ProductivityScoreExporter>
         </DialogContent>
       </Dialog>
       <Dialog

@@ -206,6 +206,51 @@ pub fn get_productivity_score_by_date(
     }
 }
 
+pub fn get_productivity_scores(
+    conn: &Arc<Mutex<SqliteConnection>>,
+    from_year: i32,
+    from_month: u32,
+    from_day: u32,
+    to_year: i32,
+    to_month: u32,
+    to_day: u32,
+) -> Vec<Vec<i32>> {
+    let mut conn = conn.lock().unwrap();
+
+    let datetime_start = Local.with_ymd_and_hms(from_year, from_month, from_day, 0, 0, 0).unwrap();
+    let datetime_end = Local.with_ymd_and_hms(to_year, to_month, to_day, 0, 0, 0).unwrap();
+    let one_day = Duration::days(1);
+    let datetime_end = datetime_end + one_day;
+
+    let target_datetime_start = datetime_start.naive_local();
+    let target_datetime_end = datetime_end.naive_local();
+
+    use crate::schema::productivity_score::dsl::*;
+
+    let productivity_scores = productivity_score
+        .filter(date.ge(target_datetime_start))
+        .filter(date.lt(target_datetime_end))
+        .order(date.asc())
+        .load::<ProductivityScores>(&mut *conn)
+        .expect("Error loading work logs by date");
+    drop(conn);
+
+    let mut result: Vec<Vec<i32>> = [].to_vec();
+
+    for pc in productivity_scores {
+
+        result.push([
+            pc.score0, pc.score1, pc.score2, pc.score3, pc.score4, pc.score5, pc.score6, pc.score7,
+            pc.score8, pc.score9, pc.score10, pc.score11, pc.score12, pc.score13, pc.score14,
+            pc.score15, pc.score16, pc.score17, pc.score18, pc.score19, pc.score20, pc.score21,
+            pc.score22, pc.score23,
+        ]
+        .to_vec());
+    };
+
+    result
+}
+
 pub fn create_productivity_score_by_date(
     conn: &Arc<Mutex<SqliteConnection>>,
     year: i32,
