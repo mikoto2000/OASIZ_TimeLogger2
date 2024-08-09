@@ -10,6 +10,8 @@ import dayjs, { Dayjs } from "dayjs";
 import toast, { Toaster } from "react-hot-toast";
 import Parser from "@json2csv/plainjs/Parser.js";
 
+import { sendIntent } from "tauri-plugin-android-intent-send-api";
+
 export type ExportType = 'json' | 'csv';
 
 interface ProductivityScoreExporterProps {
@@ -24,7 +26,7 @@ const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps> = ({ e
 
   const [dataBlobUrl, setDataBlobUrl] = useState<string | null>(null);
 
-  const [_platform, setPlatform] = useState<string | null>(null);
+  const [platform, setPlatform] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -67,9 +69,11 @@ const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps> = ({ e
         .date(toDate.date());
 
       const parser = new Parser({
-        fields: ["年月日", "時間", "作業", "生産性スコア", "生産性スコア合計"]
+        fields: ["年月日", "時間", "作業", "生産性スコア", "生産性スコア合計"],
+        withBOM: true
       });
 
+      let data: string = "";
       let target = fromDay;
       while (!target.isAfter(toDay)) {
         const nextDay = target.add(1, 'day');
@@ -100,32 +104,31 @@ const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps> = ({ e
           })
         }
 
-        let csv = parser.parse(rows);
-        console.log(csv);
+        data = parser.parse(rows);
 
         target = target.add(1, 'day');
       }
 
-      //try {
-      //  const dd = await downloadDir();
-      //  console.log(dd);
-      //const savePath = path.join(dd, "worklog.json");
+      // try {
+      //   const dd = await downloadDir();
+      //   console.log(dd);
+      //   const savePath = path.join(dd, "worklog.json");
 
-      //if (savePath) {
-      //  writeTextFile(savePath, data);
-      //  toast.success(`save to ${savePath}`);
-      //}
-      //} catch (err) {
-      //  console.log(err);
-      //}
-
-      // if (platform !== 'android' && platform !== 'ios' && platform != null) {
-      //   const blob = new Blob([data], { type: 'text/plain' });
-      //   const blobUrl = URL.createObjectURL(blob);
-      //   setDataBlobUrl(blobUrl);
-      // } else {
-      //   sendIntent(`worklog.${exportType}`, data);
+      //   if (savePath) {
+      //     writeTextFile(savePath, data);
+      //     toast.success(`save to ${savePath}`);
+      //   }
+      // } catch (err) {
+      //   console.log(err);
       // }
+
+      if (platform !== 'android' && platform !== 'ios' && platform != null) {
+        const blob = new Blob([data], { type: 'text/plain' });
+        const blobUrl = URL.createObjectURL(blob);
+        setDataBlobUrl(blobUrl);
+      } else {
+        sendIntent(`worklog.${exportType}`, data);
+      }
     }
   }
 

@@ -29,6 +29,7 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
 
   const [exportType, setExportType] = useState<ExportType>('json');
   const [showExportDialog, setShowExportDialog] = useState<boolean>(false);
+  const [showProductivityScoreExportDialog, setShowProductivityScoreExportDialog] = useState<boolean>(false);
 
   const [showNoticeDialog, setShowNoticeDialog] = useState<boolean>(false);
 
@@ -105,6 +106,17 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
             </ButtonGroup>
           </MenuItem>
           <Divider />
+          <MenuItem>生産性スコアエクスポート</MenuItem>
+          <MenuItem>
+            <ButtonGroup>
+              <Button onClick={() => {
+                setExportType('csv')
+                setShowProductivityScoreExportDialog(true)
+              }}>CSV</Button>
+              <Button disabled>JSON</Button>
+            </ButtonGroup>
+          </MenuItem>
+          <Divider />
           <MenuItem
           >ライトモード・ダークモード切替
           </MenuItem>
@@ -139,6 +151,16 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
       <Dialog
         open={showExportDialog}
         onClose={() => { setShowExportDialog(false) }} >
+        <DialogContent>
+          <FileExporter
+            exportType={exportType}
+            service={service}>
+          </FileExporter>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={showProductivityScoreExportDialog}
+        onClose={() => { setShowProductivityScoreExportDialog(false) }} >
         <DialogContent>
           <ProductivityScoreExporter
             exportType={exportType}
