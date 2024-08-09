@@ -3,6 +3,8 @@
     windows_subsystem = "windows"
 )]
 
+use std::collections::HashMap;
+
 use chrono::{DateTime, Local};
 use serde::{Deserialize, Serialize};
 use tauri::State;
@@ -164,7 +166,7 @@ pub fn get_productivity_scores_command(
     to_year: i32,
     to_month: u32,
     to_day: u32,
-) -> Result<Vec<Vec<i32>>, String> {
+) -> Result<HashMap<String, Vec<i32>>, String> {
     let state = state.clone();
     let conn = state.conn.clone();
 

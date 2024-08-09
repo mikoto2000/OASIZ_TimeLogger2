@@ -39,8 +39,8 @@ export const mockService_0: Service = {
   },
   updateProductivityScoreByDate: async function(_date: Date, _productivityScore: number[]): Promise<void> {
   },
-  getProductivityScores: async function(_fromYear: number, _fromMonth: number, _fromDay: number, _toYear: number, _toMonth: number, _toDay: number): Promise<number[][]> {
-    return [];
+  getProductivityScores: async function(_fromYear: number, _fromMonth: number, _fromDay: number, _toYear: number, _toMonth: number, _toDay: number): Promise<{ [key: string]: number[] }> {
+    return {};
   }
 };
 
@@ -131,8 +131,8 @@ export const mockService_3: Service = {
   },
   updateProductivityScoreByDate: async function(_date: Date, _productivityScore: number[]): Promise<void> {
   },
-  getProductivityScores: async function(_fromYear: number, _fromMonth: number, _fromDay: number, _toYear: number, _toMonth: number, _toDay: number): Promise<number[][]> {
-    return [];
+  getProductivityScores: async function(_fromYear: number, _fromMonth: number, _fromDay: number, _toYear: number, _toMonth: number, _toDay: number): Promise<{ [key: string]: number[] }> {
+    return {};
   }
 };
 

@@ -1,7 +1,8 @@
-use chrono::{DateTime, Duration, Local, TimeZone, Utc};
+use chrono::{DateTime, Duration, FixedOffset, Local, TimeZone, Utc};
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use dotenv::dotenv;
+use std::collections::HashMap;
 use std::env;
 use std::sync::{Arc, Mutex};
 
@@ -214,11 +215,15 @@ pub fn get_productivity_scores(
     to_year: i32,
     to_month: u32,
     to_day: u32,
-) -> Vec<Vec<i32>> {
+) -> HashMap<String, Vec<i32>> {
     let mut conn = conn.lock().unwrap();
 
-    let datetime_start = Local.with_ymd_and_hms(from_year, from_month, from_day, 0, 0, 0).unwrap();
-    let datetime_end = Local.with_ymd_and_hms(to_year, to_month, to_day, 0, 0, 0).unwrap();
+    let datetime_start = Local
+        .with_ymd_and_hms(from_year, from_month, from_day, 0, 0, 0)
+        .unwrap();
+    let datetime_end = Local
+        .with_ymd_and_hms(to_year, to_month, to_day, 0, 0, 0)
+        .unwrap();
     let one_day = Duration::days(1);
     let datetime_end = datetime_end + one_day;
 
@@ -235,18 +240,23 @@ pub fn get_productivity_scores(
         .expect("Error loading work logs by date");
     drop(conn);
 
-    let mut result: Vec<Vec<i32>> = [].to_vec();
+    let mut result: HashMap<String, Vec<i32>> = HashMap::new();
 
+    println!("{:?}", productivity_scores);
     for pc in productivity_scores {
-
-        result.push([
+        let scores = [
             pc.score0, pc.score1, pc.score2, pc.score3, pc.score4, pc.score5, pc.score6, pc.score7,
             pc.score8, pc.score9, pc.score10, pc.score11, pc.score12, pc.score13, pc.score14,
             pc.score15, pc.score16, pc.score17, pc.score18, pc.score19, pc.score20, pc.score21,
             pc.score22, pc.score23,
         ]
-        .to_vec());
-    };
+        .to_vec();
+
+        let d: DateTime<FixedOffset> = DateTime::parse_from_rfc3339(&pc.date).unwrap();
+        result.insert(d.with_timezone(&Utc).date_naive().to_string(), scores);
+
+        println!("{:?}", result);
+    }
 
     result
 }
@@ -308,16 +318,56 @@ pub fn update_productivity_score_by_date(
     year: i32,
     month: u32,
     day: u32,
-    s0: i32, s1: i32, s2: i32, s3: i32, s4: i32, s5: i32,
-    s6: i32, s7: i32, s8: i32, s9: i32, s10: i32, s11: i32,
-    s12: i32, s13: i32, s14: i32, s15: i32, s16: i32, s17: i32,
-    s18: i32, s19: i32, s20: i32, s21: i32, s22: i32, s23: i32,
+    s0: i32,
+    s1: i32,
+    s2: i32,
+    s3: i32,
+    s4: i32,
+    s5: i32,
+    s6: i32,
+    s7: i32,
+    s8: i32,
+    s9: i32,
+    s10: i32,
+    s11: i32,
+    s12: i32,
+    s13: i32,
+    s14: i32,
+    s15: i32,
+    s16: i32,
+    s17: i32,
+    s18: i32,
+    s19: i32,
+    s20: i32,
+    s21: i32,
+    s22: i32,
+    s23: i32,
 ) -> usize {
     let updated_productivity_scores = UpdateProductivityScores {
-        score0: s0, score1: s1, score2: s2, score3: s3, score4: s4, score5: s5,
-        score6: s6, score7: s7, score8: s8, score9: s9, score10: s10, score11: s11,
-        score12: s12, score13: s13, score14: s14, score15: s15, score16: s16, score17: s17,
-        score18: s18, score19: s19, score20: s20, score21: s21, score22: s22, score23: s23,
+        score0: s0,
+        score1: s1,
+        score2: s2,
+        score3: s3,
+        score4: s4,
+        score5: s5,
+        score6: s6,
+        score7: s7,
+        score8: s8,
+        score9: s9,
+        score10: s10,
+        score11: s11,
+        score12: s12,
+        score13: s13,
+        score14: s14,
+        score15: s15,
+        score16: s16,
+        score17: s17,
+        score18: s18,
+        score19: s19,
+        score20: s20,
+        score21: s21,
+        score22: s22,
+        score23: s23,
     };
 
     let mut conn = conn.lock().unwrap();

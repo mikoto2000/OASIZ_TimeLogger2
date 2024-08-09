@@ -19,7 +19,7 @@ interface ProductivityScoreExporterProps {
   service: Service;
 };
 
-const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps> = ({ exportType, service = new TauriService() }) => {
+export const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps> = ({ exportType, service = new TauriService() }) => {
 
   const [fromDate, setFromDate] = useState<Dayjs | null>(dayjs());
   const [toDate, setToDate] = useState<Dayjs | null>(dayjs());
@@ -46,7 +46,7 @@ const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps> = ({ e
       );
 
       // TODO: 戻り値に日付情報が必要
-      const productivityScores = await service.getProductivityScores(
+      const productivityScores: { [key: string]: number[] } = await service.getProductivityScores(
         fromDate.year(),
         fromDate.month() + 1,
         fromDate.date(),
@@ -73,9 +73,16 @@ const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps> = ({ e
         withBOM: true
       });
 
-      let data: string = "";
+      let rows: any = [];
       let target = fromDay;
       while (!target.isAfter(toDay)) {
+        console.log(target);
+        if (!productivityScores.hasOwnProperty(target.format("YYYY-MM-DD"))) {
+          console.log("kityatta...");
+          target = target.add(1, 'day');
+          continue;
+        }
+
         const nextDay = target.add(1, 'day');
 
         // TODO: 最適化
@@ -89,10 +96,12 @@ const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps> = ({ e
               (!logEndDay.isBefore(target) && logEndDay.isBefore(nextDay)))
           })
 
-        let rows: any = [];
+        let dateLabel = target.format("YYYY-MM-DD");
+        let sum = productivityScores[target.format("YYYY-MM-DD")].reduce((sum: number, current: number) => { return sum + current }, 0);
+
         for (let i = 0; i < 24; i++) {
           rows.push({
-            "年月日": target.format("YYYY-MM-DD"),
+            "年月日": dateLabel,
             "時間": i,
             "作業": filterdLogs.filter((e: any) => {
               let logStartHour = dayjs(e.start_date).hour();
@@ -100,14 +109,15 @@ const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps> = ({ e
 
               return (logStartHour === i || logEndHour === i)
             }).map((e: any) => e.work_name).join("\n"),
-            "生産性スコア": productivityScores[0][i]
+            "生産性スコア": productivityScores[dateLabel][i],
+            "生産性スコア合計": sum
           })
         }
 
-        data = parser.parse(rows);
-
         target = target.add(1, 'day');
       }
+
+      let data = parser.parse(rows);
 
       // try {
       //   const dd = await downloadDir();

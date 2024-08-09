@@ -46,7 +46,7 @@ export interface Service {
     fromDay: number,
     toYear: number,
     toMonth: number,
-    toDay: number): Promise<number[][]>;
+    toDay: number): Promise<{ [key: string]: number[] }>;
   updateProductivityScoreByDate(date: Date, productivityScore: number[]): Promise<void>;
 }
 
