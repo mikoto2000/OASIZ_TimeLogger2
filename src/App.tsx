@@ -113,7 +113,11 @@ const App: React.FC<AppProps> = ({ service = new TauriService() }) => {
                 setExportType('csv')
                 setShowProductivityScoreExportDialog(true)
               }}>CSV</Button>
-              {/*<Button disabled>JSON</Button>*/}
+              <Button onClick={() => {
+                setExportType('json')
+                setShowProductivityScoreExportDialog(true)
+              }}
+              >JSON</Button>
             </ButtonGroup>
           </MenuItem>
           <Divider />

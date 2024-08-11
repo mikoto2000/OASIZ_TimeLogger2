@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { Box, Button, Link, Stack } from "@mui/material";
-import { Service } from "../services/Service";
+import { Service, WorkLog } from "../services/Service";
 import { TauriService } from "../services/TauriService";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -45,7 +45,6 @@ export const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps>
         toDate.date(),
       );
 
-      // TODO: 戻り値に日付情報が必要
       const productivityScores: { [key: string]: number[] } = await service.getProductivityScores(
         fromDate.year(),
         fromDate.month() + 1,
@@ -54,7 +53,6 @@ export const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps>
         toDate.month() + 1,
         toDate.date(),
       );
-      console.log(productivityScores);
 
       const fromDay = dayjs()
         .startOf('date')
@@ -68,56 +66,12 @@ export const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps>
         .month(toDate.month())
         .date(toDate.date());
 
-      const parser = new Parser({
-        fields: ["年月日", "時間", "作業", "生産性スコア", "生産性スコア合計"],
-        withBOM: true
-      });
-
-      let rows: any = [];
-      let target = fromDay;
-      while (!target.isAfter(toDay)) {
-        console.log(target);
-        if (!productivityScores.hasOwnProperty(target.format("YYYY-MM-DD"))) {
-          console.log("kityatta...");
-          target = target.add(1, 'day');
-          continue;
-        }
-
-        const nextDay = target.add(1, 'day');
-
-        // TODO: 最適化
-        const filterdLogs = logs
-          .filter((log: any) => {
-            let logStartDay = dayjs(log.start_date);
-            let logEndDay = dayjs(log.end_date);
-
-            return ((!logStartDay.isBefore(target) && logStartDay.isBefore(nextDay))
-              ||
-              (!logEndDay.isBefore(target) && logEndDay.isBefore(nextDay)))
-          })
-
-        let dateLabel = target.format("YYYY-MM-DD");
-        let sum = productivityScores[target.format("YYYY-MM-DD")].reduce((sum: number, current: number) => { return sum + current }, 0);
-
-        for (let i = 0; i < 24; i++) {
-          rows.push({
-            "年月日": dateLabel,
-            "時間": i,
-            "作業": filterdLogs.filter((e: any) => {
-              let logStartHour = dayjs(e.start_date).hour();
-              let logEndHour = dayjs(e.end_date).hour();
-
-              return (logStartHour === i || logEndHour === i)
-            }).map((e: any) => e.work_name).join("\n"),
-            "生産性スコア": productivityScores[dateLabel][i],
-            "生産性スコア合計": sum
-          })
-        }
-
-        target = target.add(1, 'day');
+      let data = "";
+      if (exportType === "csv") {
+        data = await createCsvString(logs, fromDay, toDay, productivityScores);
+      } else {
+        data = await createJsonString(logs, fromDay, toDay, productivityScores);
       }
-
-      let data = parser.parse(rows);
 
       // try {
       //   const dd = await downloadDir();
@@ -142,6 +96,125 @@ export const ProductivityScoreExporter: React.FC<ProductivityScoreExporterProps>
     }
   }
 
+  const createCsvString = async (logs: WorkLog[], fromDay: Dayjs, toDay: Dayjs, productivityScores: { [key: string]: number[] }): Promise<string> => {
+    const parser = new Parser({
+      fields: ["年月日", "時間", "作業", "生産性スコア", "生産性スコア合計"],
+      withBOM: true
+    });
+
+    let rows: any = [];
+    let target = fromDay;
+    while (!target.isAfter(toDay)) {
+      if (!productivityScores.hasOwnProperty(target.format("YYYY-MM-DD"))) {
+        target = target.add(1, 'day');
+        continue;
+      }
+
+      const nextDay = target.add(1, 'day');
+
+      // TODO: 最適化
+      const filterdLogs = logs
+        .filter((log: any) => {
+          let logStartDay = dayjs(log.start_date);
+          let logEndDay = dayjs(log.end_date);
+
+          return ((!logStartDay.isBefore(target) && logStartDay.isBefore(nextDay))
+            ||
+            (!logEndDay.isBefore(target) && logEndDay.isBefore(nextDay)))
+        })
+
+      let dateLabel = target.format("YYYY-MM-DD");
+      let sum = productivityScores[target.format("YYYY-MM-DD")].reduce((sum: number, current: number) => { return sum + current }, 0);
+
+      for (let i = 0; i < 24; i++) {
+        rows.push({
+          "年月日": dateLabel,
+          "時間": i,
+          "作業": filterdLogs.filter((e: any) => {
+            let logStartHour = dayjs(e.start_date).hour();
+            let logEndHour = dayjs(e.end_date).hour();
+
+            return (logStartHour === i || logEndHour === i)
+          }).map((e: any) => e.work_name).join("\n"),
+          "生産性スコア": productivityScores[dateLabel][i],
+          "生産性スコア合計": sum
+        })
+      }
+
+      target = target.add(1, 'day');
+    }
+
+    return parser.parse(rows);
+
+  };
+
+  type HourItem = {
+    hour: number;
+    work: string;
+    score: number;
+  }
+
+  type DayItem = {
+    date: string,
+    scores: HourItem[];
+    sum: number,
+  };
+
+  const createJsonString = async (logs: WorkLog[], fromDay: Dayjs, toDay: Dayjs, productivityScores: { [key: string]: number[] }): Promise<string> => {
+    let result: DayItem[] = [];
+    let target = fromDay;
+    while (!target.isAfter(toDay)) {
+      if (!productivityScores.hasOwnProperty(target.format("YYYY-MM-DD"))) {
+        target = target.add(1, 'day');
+        continue;
+      }
+
+      const nextDay = target.add(1, 'day');
+
+      // TODO: 最適化
+      const filterdLogs = logs
+        .filter((log: any) => {
+          let logStartDay = dayjs(log.start_date);
+          let logEndDay = dayjs(log.end_date);
+
+          return ((!logStartDay.isBefore(target) && logStartDay.isBefore(nextDay))
+            ||
+            (!logEndDay.isBefore(target) && logEndDay.isBefore(nextDay)))
+        })
+
+      let dateLabel = target.format("YYYY-MM-DD");
+      let sum = productivityScores[target.format("YYYY-MM-DD")].reduce((sum: number, current: number) => { return sum + current }, 0);
+
+      const dayItem: DayItem = {
+        date: dateLabel,
+        scores: [],
+        sum
+      };
+
+      for (let i = 0; i < 24; i++) {
+
+        const hourItem = {
+          hour: i,
+          work: filterdLogs.filter((e: any) => {
+            let logStartHour = dayjs(e.start_date).hour();
+            let logEndHour = dayjs(e.end_date).hour();
+
+            return (logStartHour === i || logEndHour === i)
+          }).map((e: any) => e.work_name).join("\n"),
+          score: productivityScores[dateLabel][i],
+        };
+
+        dayItem.scores.push(hourItem)
+      }
+
+      result.push(dayItem)
+
+      target = target.add(1, 'day');
+    }
+
+    return JSON.stringify(result);
+
+  };
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <Stack spacing={2}>
