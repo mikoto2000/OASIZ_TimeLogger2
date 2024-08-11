@@ -266,7 +266,7 @@ pub fn create_productivity_score_by_date(
 ) -> Vec<i32> {
     let mut conn = conn.lock().unwrap();
 
-    let datetime = Local.with_ymd_and_hms(year, month, day, 0, 0, 0).unwrap();
+    let datetime = Utc.with_ymd_and_hms(year, month, day, 0, 0, 0).unwrap();
 
     let insert_data = ProductivityScores {
         date: datetime.to_rfc3339(),
@@ -298,7 +298,7 @@ pub fn create_productivity_score_by_date(
 
     use crate::schema::productivity_score::dsl::*;
 
-    diesel::insert_into(productivity_score)
+    diesel::insert_or_ignore_into(productivity_score)
         .values(&insert_data)
         .execute(&mut *conn)
         .expect("Error saving new productivity score");
