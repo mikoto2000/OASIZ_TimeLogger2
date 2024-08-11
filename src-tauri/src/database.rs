@@ -242,7 +242,6 @@ pub fn get_productivity_scores(
 
     let mut result: HashMap<String, Vec<i32>> = HashMap::new();
 
-    println!("{:?}", productivity_scores);
     for pc in productivity_scores {
         let scores = [
             pc.score0, pc.score1, pc.score2, pc.score3, pc.score4, pc.score5, pc.score6, pc.score7,
@@ -254,8 +253,6 @@ pub fn get_productivity_scores(
 
         let d: DateTime<FixedOffset> = DateTime::parse_from_rfc3339(&pc.date).unwrap();
         result.insert(d.with_timezone(&Utc).date_naive().to_string(), scores);
-
-        println!("{:?}", result);
     }
 
     result
