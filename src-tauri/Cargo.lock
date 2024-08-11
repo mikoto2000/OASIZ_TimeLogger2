@@ -1905,7 +1905,7 @@ dependencies = [
 
 [[package]]
 name = "oasiz_timelogger"
-version = "0.0.3"
+version = "0.0.4"
 dependencies = [
  "chrono",
  "diesel",
