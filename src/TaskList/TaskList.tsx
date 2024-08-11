@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { List, Divider, Typography, Button, Grid, Select, Box } from '@mui/material';
+import { List, Divider, Typography, Button, Grid, Select, Box, Stack } from '@mui/material';
 import { Service, WorkLog } from '../services/Service';
 import { TauriService } from '../services/TauriService';
 import TaskListItem from '../commons/TaskListItem';
 import WorkLogEditDialog from './WorkLogEditDialog';
 import MenuItem from '@mui/material/MenuItem';
 import dayjs, { Dayjs } from 'dayjs';
+import { AddCircle } from '@mui/icons-material';
+import { TaskAddDialog } from './TaskAddDialog';
 
 interface TaskListProps {
   service?: Service;
@@ -19,6 +21,9 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
 
   // 作業名編集ダイアログ
   const [showDialog, setShowDialog] = useState<boolean>(false);
+
+  // 新規作業追加ダイアログ
+  const [showTaskAddDialog, setShowTaskAddDialog] = useState<boolean>(false);
 
   const [errorMessage, setErrorMessage] = useState("");
   const [editTask, setEditTask] = useState<WorkLog | null>(null);
@@ -143,7 +148,12 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
                 <Grid xs={1} sx={{}}>
                   <Divider />
                   <Box sx={{ width: "100%", height: "100%", textAlign: "center", verticalAlign: "middle" }}>
-                    {e}
+                    <Stack>
+                      <Box>{e}</Box>
+                      <Box><AddCircle color="primary" onClick={() => {
+                        setShowTaskAddDialog(true);
+                      }} /></Box>
+                    </Stack>
                   </Box>
                 </Grid >
                 <Divider orientation="vertical" flexItem sx={{ marginLeft: "-1px" }} />
@@ -220,6 +230,13 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
         }}
         onClose={() => { setShowDialog(false) }}
       ></WorkLogEditDialog>
+      <TaskAddDialog
+        show={showTaskAddDialog}
+        onSave={(newTaskName, elapsed) => {
+          console.log(newTaskName, elapsed);
+        }}
+        onClose={() => { setShowTaskAddDialog(false) }}
+      />
     </div>
   );
 
