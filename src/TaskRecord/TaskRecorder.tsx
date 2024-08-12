@@ -3,6 +3,7 @@ import { List, Divider, Button, TextField } from '@mui/material';
 import { CreateLog, Service, UpdateLog, WorkLog } from '../services/Service';
 import { TauriService } from '../services/TauriService';
 import TaskListItem from '../commons/TaskListItem';
+import dayjs from 'dayjs';
 
 interface TaskRecorderProps {
   service: Service;
@@ -40,7 +41,7 @@ const TaskRecorder: React.FC<TaskRecorderProps> = ({ service = new TauriService(
   const handleStart = () => {
     const newLog: CreateLog = {
       workName: workName,
-      startDate: new Date().toISOString(),
+      startDate: dayjs().tz().format(),
     };
     service.createWorkLog(newLog)
       .then((newNo) => {

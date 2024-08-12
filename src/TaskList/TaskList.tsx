@@ -24,6 +24,7 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
 
   // 新規作業追加ダイアログ
   const [showTaskAddDialog, setShowTaskAddDialog] = useState<boolean>(false);
+  const [selectedHour, setSelectedHour] = useState<number>(-1);
 
   const [errorMessage, setErrorMessage] = useState("");
   const [editTask, setEditTask] = useState<WorkLog | null>(null);
@@ -151,6 +152,7 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
                     <Stack>
                       <Box>{e}</Box>
                       <Box><AddCircle color="primary" onClick={() => {
+                        setSelectedHour(e);
                         setShowTaskAddDialog(true);
                       }} /></Box>
                     </Stack>
@@ -231,9 +233,29 @@ const TaskList: React.FC<TaskListProps> = ({ service = new TauriService() }) => 
         onClose={() => { setShowDialog(false) }}
       ></WorkLogEditDialog>
       <TaskAddDialog
+        date={selectedDate}
+        hour={1}
         show={showTaskAddDialog}
-        onSave={(newTaskName, elapsed) => {
-          console.log(newTaskName, elapsed);
+        onSave={(newTaskName, date, hour, elapsed) => {
+          console.log(newTaskName, date, hour, elapsed);
+
+          const startDate = dayjs(date)
+            .hour(selectedHour)
+            .minute(0)
+            .second(0);
+
+          const endDate = startDate.add(elapsed, 'minute');
+
+          service.createWorkLog({
+            workName: newTaskName,
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString()
+          });
+
+          setSelectedHour(-1);
+          setShowTaskAddDialog(false);
+
+          setSelectedDate(startDate.toDate())
         }}
         onClose={() => { setShowTaskAddDialog(false) }}
       />
