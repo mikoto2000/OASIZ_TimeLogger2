@@ -1,6 +1,6 @@
 {
   "productName": "OASIZ_TimeLogger2",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "identifier": "dev.mikoto2000.oasiztimelogger2",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -31,7 +31,7 @@
       "icons/icon.ico"
     ],
     "android": {
-      "versionCode": 5
+      "versionCode": 6
     }
   }
 }
