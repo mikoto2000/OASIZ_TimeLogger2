@@ -13,6 +13,16 @@ import FileExporter, { ExportType } from './export/FileExporter';
 import ProductivityScoreExporter from './export/ProductivityScoreExporter';
 
 import notice from "../NOTICE.md";
+import dayjs from 'dayjs';
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+const machineTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault(machineTimeZone);
+
 
 interface AppProps {
   service?: Service;
