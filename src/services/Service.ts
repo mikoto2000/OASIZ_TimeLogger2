@@ -10,6 +10,7 @@ export interface WorkLog {
 export interface CreateLog {
   workName: string;
   startDate: string;
+  endDate?: string | null;
 }
 
 export interface UpdateLog {

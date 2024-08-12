@@ -42,12 +42,13 @@ pub fn create_work_log_command(
     state: State<'_, AppState>,
     work_name: String,
     start_date: DateTime<Local>,
+    end_date: Option<DateTime<Local>>,
 ) -> Result<i32, String> {
     println!("create_work_log_command");
     let state = state.clone();
     let conn = state.conn.clone();
 
-    Ok(create_work_log(&conn, work_name, start_date))
+    Ok(create_work_log(&conn, work_name, start_date, end_date))
 }
 
 #[tauri::command]

@@ -23,11 +23,15 @@ pub fn create_work_log(
     conn: &Arc<Mutex<SqliteConnection>>,
     work_name: String,
     start_date: DateTime<Local>,
+    end_date: Option<DateTime<Local>>,
 ) -> i32 {
+
+    let end_date = end_date.map(|e| e.to_rfc3339());
+
     let new_work_log = NewWorkLog {
         work_name,
         start_date: start_date.to_rfc3339(),
-        end_date: None,
+        end_date,
     };
 
     let mut conn = conn.lock().unwrap();
